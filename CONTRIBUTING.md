@@ -6,7 +6,7 @@ code, examples, benchmarks, and — especially — arguments about the grammar.
 ## Setup
 
 ```bash
-git clone https://github.com/OWNER/chimni.git && cd chimni
+git clone https://github.com/prat8897/chimni.git && cd chimni
 pip install -e .                              # no runtime dependencies
 python -m unittest discover -s tests -v       # should finish in well under a second
 chimni examples/10_grade.chimni '{"score": 91}'

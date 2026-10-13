@@ -57,7 +57,7 @@ Chimni is **a real, runnable language** — a plain deterministic interpreter, n
 ## Try it
 
 ```bash
-git clone https://github.com/OWNER/chimni.git && cd chimni
+git clone https://github.com/prat8897/chimni.git && cd chimni
 pip install -e .          # no dependencies; or just run:  PYTHONPATH=src python -m chimni
 ```
 

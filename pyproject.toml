@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chimni"
+version = "0.1.0"
+description = "A 2D dataflow language where layout is grammar: inputs and outputs live in the syntax, and position says what depends on what."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Pratik Kulkarni" }]
+keywords = ["programming-language", "dataflow", "dsl", "2d", "interpreter", "llm"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Interpreters",
+]
+dependencies = []
+
+[project.scripts]
+chimni = "chimni.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

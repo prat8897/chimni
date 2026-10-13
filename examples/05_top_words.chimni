@@ -1,0 +1,3 @@
+-- the n most common words in a text
+$[text,n]{(word,count)}
+@text  _l  ;w  #()  +n  ~\(count)  ^[n]

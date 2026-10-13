@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" role="img" aria-label="Chimni: a 2D dataflow language where layout is grammar">
+<title>Chimni - a 2D dataflow language where layout is grammar</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b1020"/><stop offset="1" stop-color="#161e3d"/></linearGradient>
+<linearGradient id="word" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff8a3d"/><stop offset="1" stop-color="#ffd166"/></linearGradient>
+<pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.2" fill="#ffffff" fill-opacity="0.06"/></pattern>
+</defs>
+<style>@keyframes glow{0%,100%{opacity:0}10%,30%{opacity:1}45%{opacity:0}}.g{opacity:0;animation:glow 5.5s infinite}</style>
+<rect width="1280" height="360" rx="18" fill="url(#bg)"/><rect width="1280" height="360" rx="18" fill="url(#dots)"/>
+<text x="64" y="104" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="15" letter-spacing="4" fill="#8b93b5" font-weight="600">A 2D DATAFLOW LANGUAGE</text>
+<text x="60" y="200" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="96" font-weight="800" fill="url(#word)">chimni</text>
+<text x="64" y="246" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="30" fill="#e6e9f5" font-weight="600">Layout is grammar.</text>
+<text x="64" y="284" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="18" fill="#8b93b5">Right means “depends on”. Down means “independent”.</text>
+<text x="64" y="312" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="18" fill="#8b93b5">Inputs and outputs live in the syntax.</text>
+<rect x="572" y="70" width="688" height="220" rx="16" fill="#0b1020" fill-opacity="0.7" stroke="#2a3563" stroke-width="1.5"/>
+<circle cx="596" cy="92" r="6" fill="#ff5f56"/>
+<circle cx="616" cy="92" r="6" fill="#ffbd2e"/>
+<circle cx="636" cy="92" r="6" fill="#27c93f"/>
+<text x="916.0" y="97" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="13" fill="#6b7599">spenders.chimni</text>
+<text x="596" y="136" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="16" fill="#8b93b5">$[orders,min_total]{(customer,total),revenue}</text>
+<g ><rect x="596" y="162" width="88" height="40" rx="10" fill="#3ddbd9" fill-opacity="0.1" stroke="#3ddbd9" stroke-width="1.6" /><text x="640.0" y="186.9" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="14" fill="#e6e9f5" font-weight="600">@orders</text></g>
+<rect class="g" style="animation-delay:0.00s" x="593" y="159" width="94" height="46" rx="12" fill="none" stroke="#3ddbd9" stroke-width="2.5"/>
+<line x1="686" y1="182" x2="689" y2="182" stroke="#56608a" stroke-width="2"/><path d="M696,182 L687,177 L687,187 Z" fill="#56608a"/>
+<g ><rect x="698" y="162" width="112" height="40" rx="10" fill="#9b87f5" fill-opacity="0.1" stroke="#9b87f5" stroke-width="1.6" /><text x="754.0" y="186.9" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="14" fill="#e6e9f5" font-weight="600">#(customer)</text></g>
+<rect class="g" style="animation-delay:0.55s" x="695" y="159" width="118" height="46" rx="12" fill="none" stroke="#9b87f5" stroke-width="2.5"/>
+<line x1="812" y1="182" x2="815" y2="182" stroke="#56608a" stroke-width="2"/><path d="M822,182 L813,177 L813,187 Z" fill="#56608a"/>
+<g ><rect x="824" y="162" width="106" height="40" rx="10" fill="#9b87f5" fill-opacity="0.1" stroke="#9b87f5" stroke-width="1.6" /><text x="877.0" y="186.9" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="14" fill="#e6e9f5" font-weight="600">+s(amount)</text></g>
+<rect class="g" style="animation-delay:1.10s" x="821" y="159" width="112" height="46" rx="12" fill="none" stroke="#9b87f5" stroke-width="2.5"/>
+<line x1="932" y1="182" x2="935" y2="182" stroke="#56608a" stroke-width="2"/><path d="M942,182 L933,177 L933,187 Z" fill="#56608a"/>
+<g ><rect x="944" y="162" width="128" height="40" rx="10" fill="#ff8a3d" fill-opacity="0.1" stroke="#ff8a3d" stroke-width="1.6" /><text x="1008.0" y="186.9" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="14" fill="#e6e9f5" font-weight="600">?&gt;[min_total]</text></g>
+<rect class="g" style="animation-delay:1.65s" x="941" y="159" width="134" height="46" rx="12" fill="none" stroke="#ff8a3d" stroke-width="2.5"/>
+<line x1="1074" y1="182" x2="1077" y2="182" stroke="#56608a" stroke-width="2"/><path d="M1084,182 L1075,177 L1075,187 Z" fill="#56608a"/>
+<g ><rect x="1086" y="162" width="98" height="40" rx="10" fill="#ffd166" fill-opacity="0.1" stroke="#ffd166" stroke-width="1.6" /><text x="1135.0" y="186.9" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="14" fill="#e6e9f5" font-weight="600">~\(total)</text></g>
+<rect class="g" style="animation-delay:2.20s" x="1083" y="159" width="104" height="46" rx="12" fill="none" stroke="#ffd166" stroke-width="2.5"/>
+<line x1="1186" y1="182" x2="1189" y2="182" stroke="#56608a" stroke-width="2"/><path d="M1196,182 L1187,177 L1187,187 Z" fill="#56608a"/>
+<g ><rect x="1198" y="162" width="38" height="40" rx="10" fill="#6ee7a0" fill-opacity="0.1" stroke="#6ee7a0" stroke-width="1.6" /><text x="1217.0" y="186.9" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="14" fill="#e6e9f5" font-weight="600">^</text></g>
+<rect class="g" style="animation-delay:2.75s" x="1195" y="159" width="44" height="46" rx="12" fill="none" stroke="#6ee7a0" stroke-width="2.5"/>
+<g ><rect x="596" y="224" width="88" height="40" rx="10" fill="#3ddbd9" fill-opacity="0.1" stroke="#3ddbd9" stroke-width="1.6" /><text x="640.0" y="248.9" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="14" fill="#e6e9f5" font-weight="600">@orders</text></g>
+<rect class="g" style="animation-delay:0.28s" x="593" y="221" width="94" height="46" rx="12" fill="none" stroke="#3ddbd9" stroke-width="2.5"/>
+<line x1="686" y1="244" x2="689" y2="244" stroke="#56608a" stroke-width="2"/><path d="M696,244 L687,239 L687,249 Z" fill="#56608a"/>
+<g ><rect x="698" y="224" width="112" height="40" rx="10" fill="#4b5578" fill-opacity="0.06" stroke="#4b5578" stroke-width="1.6" stroke-dasharray="4 4"/><text x="754.0" y="248.9" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="14" fill="#6b7599" font-weight="600">.</text></g>
+<rect class="g" style="animation-delay:0.83s" x="695" y="221" width="118" height="46" rx="12" fill="none" stroke="#4b5578" stroke-width="2.5"/>
+<line x1="812" y1="244" x2="815" y2="244" stroke="#56608a" stroke-width="2"/><path d="M822,244 L813,239 L813,249 Z" fill="#56608a"/>
+<g ><rect x="824" y="224" width="106" height="40" rx="10" fill="#9b87f5" fill-opacity="0.1" stroke="#9b87f5" stroke-width="1.6" /><text x="877.0" y="248.9" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="14" fill="#e6e9f5" font-weight="600">+s(amount)</text></g>
+<rect class="g" style="animation-delay:1.38s" x="821" y="221" width="112" height="46" rx="12" fill="none" stroke="#9b87f5" stroke-width="2.5"/>
+<line x1="932" y1="244" x2="935" y2="244" stroke="#56608a" stroke-width="2"/><path d="M942,244 L933,239 L933,249 Z" fill="#56608a"/>
+<g ><rect x="944" y="224" width="128" height="40" rx="10" fill="#4b5578" fill-opacity="0.06" stroke="#4b5578" stroke-width="1.6" stroke-dasharray="4 4"/><text x="1008.0" y="248.9" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="14" fill="#6b7599" font-weight="600">.</text></g>
+<rect class="g" style="animation-delay:1.93s" x="941" y="221" width="134" height="46" rx="12" fill="none" stroke="#4b5578" stroke-width="2.5"/>
+<line x1="1074" y1="244" x2="1077" y2="244" stroke="#56608a" stroke-width="2"/><path d="M1084,244 L1075,239 L1075,249 Z" fill="#56608a"/>
+<g ><rect x="1086" y="224" width="98" height="40" rx="10" fill="#4b5578" fill-opacity="0.06" stroke="#4b5578" stroke-width="1.6" stroke-dasharray="4 4"/><text x="1135.0" y="248.9" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="14" fill="#6b7599" font-weight="600">.</text></g>
+<rect class="g" style="animation-delay:2.48s" x="1083" y="221" width="104" height="46" rx="12" fill="none" stroke="#4b5578" stroke-width="2.5"/>
+<line x1="1186" y1="244" x2="1189" y2="244" stroke="#56608a" stroke-width="2"/><path d="M1196,244 L1187,239 L1187,249 Z" fill="#56608a"/>
+<g ><rect x="1198" y="224" width="38" height="40" rx="10" fill="#6ee7a0" fill-opacity="0.1" stroke="#6ee7a0" stroke-width="1.6" /><text x="1217.0" y="248.9" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="14" fill="#e6e9f5" font-weight="600">^</text></g>
+<rect class="g" style="animation-delay:3.03s" x="1195" y="221" width="44" height="46" rx="12" fill="none" stroke="#6ee7a0" stroke-width="2.5"/>
+</svg>

@@ -1,0 +1,24 @@
+{
+  "name": "chimni",
+  "displayName": "Chimni",
+  "description": "Syntax highlighting for Chimni, a 2D dataflow language where layout is grammar.",
+  "version": "0.1.0",
+  "publisher": "prat8897",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/prat8897/chimni" },
+  "engines": { "vscode": "^1.75.0" },
+  "categories": ["Programming Languages"],
+  "contributes": {
+    "languages": [{
+      "id": "chimni",
+      "aliases": ["Chimni", "chimni"],
+      "extensions": [".chimni"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "chimni",
+      "scopeName": "source.chimni",
+      "path": "./syntaxes/chimni.tmLanguage.json"
+    }]
+  }
+}

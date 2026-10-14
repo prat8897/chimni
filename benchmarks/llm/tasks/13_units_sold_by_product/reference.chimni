@@ -1,2 +1,0 @@
-$[products,sales]{(name,total)}
-@products  @sales(product_id=id)  #(name)  +s(units)  ~\(total)  ^

@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [{ name = "Pratik Kulkarni" }]
-keywords = ["programming-language", "dataflow", "dsl", "2d", "interpreter", "llm"]
+keywords = ["programming-language", "dataflow", "dsl", "2d", "interpreter", "jq", "data"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",

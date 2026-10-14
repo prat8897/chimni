@@ -102,7 +102,7 @@ function syncScroll() {
 }
 
 // ------------------------------------------------------------- rendering
-function render(res, { stale = false } = {}) {
+function render(res, { stale = false, animate = false } = {}) {
   const src = els.program.value;
   els.result.classList.toggle("error", !res.ok);
   els.result.classList.toggle("stale", stale);
@@ -110,10 +110,57 @@ function render(res, { stale = false } = {}) {
   els.resultHint.textContent = stale ? "pre-rendered · Python is loading" :
     res.ok ? "Python repr" : ({ grammar: "caught before running", run: "caught while running", inputs: "check the inputs" }[res.stage] || "");
   highlight(res.row && res.stage !== "inputs" ? lineOfRow(src, res.row) : -1);
-  renderGrid(res);
+  renderGrid(res, animate);
 }
 
-function renderGrid(res) {
+// When each cell "fires" in the animation: one step to the right per cell, and a tie waits for the cells it reads.
+// Rows with no ties between them fire side by side, which is the point: they are independent.
+function cellTimes(rows) {
+  const t = rows.map(() => []);
+  rows.forEach((row, r) => {
+    let prev = -1;
+    row.forEach((text, c) => {
+      let time;
+      if (text === ".") time = Math.max(prev, 0);
+      else if (cellClass(text) === "t-tie") {
+        const ups = (text.match(/'+/g) || []).map((q) => q.length);
+        time = Math.max(prev, ...ups.map((n) => (t[r - n] && t[r - n][c] !== undefined ? t[r - n][c] : 0))) + 1;
+      } else time = prev + 1;
+      t[r][c] = time;
+      prev = time;
+    });
+  });
+  return t;
+}
+
+function drawTies(rows, times) {
+  const boxes = new Map([...els.grid.querySelectorAll(".gbox")].map((b) => [b.dataset.rc, b]));
+  const paths = [];
+  rows.forEach((row, r) => row.forEach((text, c) => {
+    if (cellClass(text) !== "t-tie") return;
+    const dst = boxes.get(`${r},${c}`);
+    for (const q of new Set((text.match(/'+/g) || []).map((x) => x.length))) {
+      const src = boxes.get(`${r - q},${c}`);
+      if (!src || !dst) continue;
+      const x = src.offsetLeft - 2, bend = 12 + 6 * q;
+      const y1 = src.offsetTop + src.offsetHeight / 2, y2 = dst.offsetTop + dst.offsetHeight / 2;
+      paths.push(`<path pathLength="1" style="--t:${times[r][c] - 1}" d="M ${x} ${y1} C ${x - bend} ${y1}, ${x - bend} ${y2}, ${x - 1} ${y2}" marker-end="url(#tie-head)"/>`);
+    }
+  }));
+  if (!paths.length) return;
+  els.grid.insertAdjacentHTML("beforeend",
+    `<svg class="ties" width="${els.grid.scrollWidth}" height="${els.grid.scrollHeight}" aria-hidden="true">
+      <defs><marker id="tie-head" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L6,3 L0,6 z"/></marker></defs>${paths.join("")}</svg>`);
+}
+
+function replay() {
+  els.grid.classList.remove("play");
+  void els.grid.offsetWidth;                       // restart the CSS animations
+  els.grid.classList.add("play");
+}
+
+function renderGrid(res, animate = false) {
   const rows = res.rows || [];
   if (!rows.length) {
     els.grid.style.gridTemplateColumns = "";
@@ -123,11 +170,13 @@ function renderGrid(res) {
   const width = Math.max(...rows.map((r) => r.length));
   const outs = new Map(res.trace.map((t) => [`${t.r},${t.c}`, t.out]));
   els.grid.style.gridTemplateColumns = `repeat(${width}, max-content)`;
+  const times = cellTimes(rows);
   let html = "";
   rows.forEach((row, ri) => {
     for (let ci = 0; ci < width; ci++) {
       const text = row[ci];
-      const arrow = ci === 0 ? "" : `<span class="garrow">${text !== undefined && text !== "." ? "→" : ""}</span>`;
+      const flows = text !== undefined && text !== "." && cellClass(text) !== "t-tie";
+      const arrow = ci === 0 ? "" : `<span class="garrow${flows ? " on" : ""}" style="--t:${flows ? times[ri][ci] - 1 : 0}">${flows ? "→" : ""}</span>`;
       if (text === undefined) { html += `<div class="gcell">${arrow}<div class="gpad"></div></div>`; continue; }
       const key = `${ri + 1},${ci + 1}`;
       const isErr = !res.ok && res.row === ri + 1 && res.col === ci + 1;
@@ -135,15 +184,18 @@ function renderGrid(res) {
       const cls = ["gbox", cellClass(text) === "t-tie" ? "tie" : "", text === "." ? "empty" : "",
         text.startsWith("^") ? "emit" : "", isErr ? "err" : "", !ran && !isErr ? "skipped" : ""].join(" ");
       const val = isErr ? "✕ error here" : text === "." ? "" : ran ? outs.get(key) : "";
-      html += `<div class="gcell">${arrow}<div class="${cls}" title="${esc(val)}"><div class="code">${hlCell(text)}</div><div class="val">${esc(val)}</div></div></div>`;
+      html += `<div class="gcell">${arrow}<div class="${cls}" data-rc="${ri},${ci}" style="--t:${times[ri][ci]}" title="${esc(val)}"><div class="code">${hlCell(text)}</div><div class="val">${esc(val)}</div></div></div>`;
     }
   });
+  els.grid.classList.remove("play");
   els.grid.innerHTML = html;
+  drawTies(rows, times);
+  if (animate) replay();
 }
 
 function renderCompare(ex) {
   els.altLang.textContent = ex.alt.lang;
-  const s = ex.size, unit = s.py_tokens !== undefined ? "tokens" : "chars";
+  const s = ex.size, unit = "chars";
   const n = (k) => `${s[k + "_lines"]} lines · ${s[k + "_" + unit]} ${unit}`;
   const block = (title, k, code) =>
     `<div class="cmp-col"><h4>${title}<span>${n(k)}</span></h4><pre>${esc(code.trimEnd())}</pre></div>`;
@@ -154,11 +206,14 @@ function renderCompare(ex) {
 }
 
 // ----------------------------------------------------------------- running
-function runNow() {
+function pristine() {
+  return current && els.program.value === current.program && els.inputs.value === current.inputs;
+}
+
+function runNow({ animate = false } = {}) {
   clearTimeout(timer);
   if (!runPy) {
-    const pristine = current && els.program.value === current.program && els.inputs.value === current.inputs;
-    if (pristine) render(current.prerun, { stale: true });
+    if (pristine()) render(current.prerun, { stale: true, animate });
     else {
       highlight();
       els.result.classList.remove("error");
@@ -168,13 +223,13 @@ function runNow() {
     }
     return;
   }
-  render(JSON.parse(runPy(els.program.value, els.inputs.value)));
+  render(JSON.parse(runPy(els.program.value, els.inputs.value)), { animate });
 }
 
 function scheduleRun() {
   highlight();
   clearTimeout(timer);
-  timer = setTimeout(runNow, 220);
+  timer = setTimeout(() => runNow(), 220);
 }
 
 function loadExample(ex, { run = true } = {}) {
@@ -183,7 +238,7 @@ function loadExample(ex, { run = true } = {}) {
   els.program.value = ex.program;
   els.inputs.value = ex.inputs;
   renderCompare(ex);
-  if (run) runNow();
+  if (run) runNow({ animate: true });
 }
 
 // -------------------------------------------------------------- share links
@@ -201,7 +256,7 @@ function fromHash() {
     loadExample(ex, { run: false });
     els.program.value = p;
     els.inputs.value = i;
-    runNow();
+    runNow({ animate: true });
     return true;
   } catch { return false; }
 }
@@ -217,7 +272,7 @@ async function share() {
 
 // ------------------------------------------------------------ comparison table
 function renderTable() {
-  const unit = EXAMPLES[0].size.py_tokens !== undefined ? "tokens" : "chars";
+  const unit = "chars";
   const key = (k) => `${k}_${unit}`;
   const max = Math.max(...EXAMPLES.map((e) => e.size[key("py")]));
   const tot = (k) => EXAMPLES.reduce((a, e) => a + e.size[k], 0);
@@ -225,7 +280,6 @@ function renderTable() {
     const v = s[key(k === "ch" ? "chimni" : k)];
     return `<span class="bar"><i class="${k}" style="width:${(v / max) * 120}px"></i>${v}</span>`;
   }).join("");
-  $("#cmp-table thead .bars").firstChild.textContent = unit === "tokens" ? "Tokens " : "Characters ";
   $("#cmp-table tbody").innerHTML = EXAMPLES.map((e) => `
     <tr data-stem="${e.stem}">
       <td><span class="stem">${e.stem}</span><span class="title">${esc(e.title)}</span></td>
@@ -237,9 +291,9 @@ function renderTable() {
     </tr>`).join("");
   $("#cmp-table tfoot").innerHTML = `<tr><td>Total</td><td class="num">${tot("py_lines")}</td><td></td>
     <td class="num">${tot("alt_lines")}</td><td class="num">${tot("chimni_lines")}</td>
-    <td class="bars">${tot(key("py"))} · ${tot(key("alt"))} · ${tot(key("chimni"))} ${unit}</td></tr>`;
+    <td class="bars">${tot(key("py"))} · ${tot(key("alt"))} · ${tot(key("chimni"))} characters</td></tr>`;
   $("#cmp-foot").textContent = `Lines of code, comments excluded; Chimni's count includes its signature line. ` +
-    (unit === "tokens" ? "Tokens are cl100k_base. " : "Characters with whitespace squeezed. ") +
+    "Characters with whitespace squeezed. " +
     "Click a row to open it in the playground.";
   $("#cmp-table tbody").addEventListener("click", (ev) => {
     const tr = ev.target.closest("tr[data-stem]");
@@ -274,7 +328,11 @@ async function bootPython() {
     const ver = py.runPython("import sys; sys.version.split()[0]");
     setStatus("ready", `Python ${ver} in your browser · ready in ${((performance.now() - t0) / 1000).toFixed(1)}s`);
     els.run.disabled = false;
-    runNow();
+    if (pristine() && els.result.classList.contains("stale")) {
+      // the pre-rendered result is what Python would print; don't restart the animation for it
+      els.result.classList.remove("stale");
+      els.resultHint.textContent = current.prerun.ok ? "Python repr" : "";
+    } else runNow();
   } catch (err) {
     console.error(err);
     setStatus("failed", "Couldn't load Python — showing pre-rendered results only");
@@ -295,19 +353,20 @@ async function main() {
   els.program.addEventListener("input", scheduleRun);
   els.inputs.addEventListener("input", scheduleRun);
   els.program.addEventListener("scroll", syncScroll);
-  els.run.addEventListener("click", runNow);
+  els.run.addEventListener("click", () => runNow({ animate: true }));
+  $("#replay").addEventListener("click", replay);
   els.share.addEventListener("click", share);
   window.addEventListener("hashchange", fromHash);
   document.querySelectorAll("button.try").forEach((b) => b.addEventListener("click", () => {
     els.program.value = b.dataset.program;
     els.inputs.value = b.dataset.inputs;
-    runNow();
+    runNow({ animate: true });
     $("#play").scrollIntoView();
   }));
 
   for (const ta of [els.program, els.inputs]) {
     ta.addEventListener("keydown", (ev) => {
-      if (ev.key === "Enter" && (ev.metaKey || ev.ctrlKey)) { ev.preventDefault(); runNow(); return; }
+      if (ev.key === "Enter" && (ev.metaKey || ev.ctrlKey)) { ev.preventDefault(); runNow({ animate: true }); return; }
       if (ev.key === "Tab" && !ev.shiftKey) {
         ev.preventDefault();
         document.execCommand("insertText", false, "  ");

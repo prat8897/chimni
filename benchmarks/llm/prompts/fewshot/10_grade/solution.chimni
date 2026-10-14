@@ -1,3 +1,0 @@
--- a ladder: first rung that matches wins, _ is the default
-$[score]{grade}
-@score  ?>=[90:A, 75:B, _:C]  ^

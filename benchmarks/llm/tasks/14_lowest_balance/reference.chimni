@@ -1,2 +1,0 @@
-$[transactions]{low|none}
-@transactions  +r(amount)  +i(run)  *(run)  ^

@@ -14,6 +14,8 @@
 
 <p align="center"><b><a href="https://prat8897.github.io/chimni/">▶ Try it in your browser</a></b> — no install; the real interpreter runs on Pyodide.</p>
 
+<p align="center"><img src="assets/dataflow.gif" alt="Animation: each cell lights up as data flows left to right; two independent rows run side by side, then a tie reads them both" width="88%"></p>
+
 ---
 
 In Sanskrit, a word's ending tells you its role in the sentence, so a lot of meaning fits in very little text.
@@ -55,27 +57,58 @@ Take `orders` → group by customer → sum `amount` → keep totals above `min_
 </td></tr>
 </table>
 
-Chimni is **a real, runnable language** — a plain deterministic interpreter, no model in the loop — and every example in this repo is tested against its Python original on random inputs.
+Every example in this repo is tested against its Python original on random inputs.
 
-## Try it
-
-The fastest way is the **[playground](https://prat8897.github.io/chimni/)**: pick an example, edit it, and watch every
-cell's output update as you type. To run it locally:
+## In your terminal: like jq, but you can read it
 
 ```bash
-git clone https://github.com/prat8897/chimni.git && cd chimni
-pip install -e .          # no dependencies; or just run:  PYTHONPATH=src python -m chimni
+pip install git+https://github.com/prat8897/chimni     # zero dependencies
 ```
+
+Pipe JSON or CSV in, write the pipeline inline, get JSON (or CSV) out. Inline programs don't need a signature.
 
 ```console
-$ chimni examples/02_spenders_and_revenue.chimni \
-    '{"orders":[{"customer":"asha","amount":120},{"customer":"ravi","amount":40},
-                {"customer":"asha","amount":80},{"customer":"meera","amount":300},
-                {"customer":"ravi","amount":25}], "min_total":100}'
-([('meera', 300), ('asha', 200)], 565)
+$ cat orders.csv
+customer,amount
+asha,120
+ravi,40
+asha,80
+meera,300
+ravi,25
+
+$ chimni '@orders  #(customer)  +s(amount)  ~\(total)  ^' < orders.csv
+[
+  {"customer": "meera", "total": 300},
+  {"customer": "asha", "total": 200},
+  {"customer": "ravi", "total": 65}
+]
+
+$ chimni '@orders  ?(amount)>[limit]  *(customer)  %()  ^' orders.csv --arg limit=50 -c
+["asha","meera"]
+
+$ chimni '@orders  #(customer)  +n  ^' orders.csv -o csv
+customer,count
+asha,2
+ravi,2
+meera,1
 ```
 
-Add `--trace` to watch the data move through each cell:
+Data can come from stdin, `.json`/`.csv`/`.jsonl` files (bound to inputs by file name, or `name=file`), a JSON
+literal, or `--arg name=value`. Saved programs work the same way:
+
+```console
+$ chimni examples/02_spenders_and_revenue.chimni @examples/inputs/02_spenders_and_revenue.json
+[
+  [["meera", 300], ["asha", 200]],
+  565
+]
+```
+
+`chimni fmt -w *.chimni` lines cells up into columns (only whitespace changes), and there's
+[syntax highlighting for VS Code](editors/vscode). The [playground](https://prat8897.github.io/chimni/) shows every
+cell's output as you type.
+
+Add `--trace` to watch the data move through each cell (printed to stderr):
 
 ```console
 $ chimni examples/01_big_spenders.chimni '{...}' --trace
@@ -85,7 +118,10 @@ r1c3  +s(amount)     -> [3] [{'customer': 'asha', 'total': 200}, {'customer': 'r
 r1c4  ?>[min_total]  -> [2] [{'customer': 'asha', 'total': 200}, {'customer': 'meera', 'total':…
 r1c5  ~\(total)      -> [2] [{'customer': 'meera', 'total': 300}, {'customer': 'asha', 'total':…
 r1c6  ^              -> [2] [{'customer': 'meera', 'total': 300}, {'customer': 'asha', 'total':…
-[('meera', 300), ('asha', 200)]
+[
+  ["meera", 300],
+  ["asha", 200]
+]
 ```
 
 Or use it from Python:
@@ -147,25 +183,23 @@ thing. Each one opens in the [playground](https://prat8897.github.io/chimni/).
 ### The fair comparison
 
 Comparing Chimni with loop-and-dict Python flatters it, so here are the numbers against the tools built for the job
-(comments and blank lines excluded; characters counted with whitespace squeezed; tokens are `cl100k_base`;
-Chimni's line count includes its signature):
+(comments and blank lines excluded; characters counted with whitespace squeezed; Chimni's line count includes its
+signature):
 
 |  | Python | pandas / SQL / jq | Chimni |
 |---|---:|---:|---:|
 | lines | 67 | 36 | 23 |
 | characters | 1,973 | 1,435 | 716 |
-| tokens | 623 | 412 | 317 |
 
-- **Most of Chimni's lead over Python disappears against the right tool.** SQL and jq are about as short as Chimni,
-  and on `02`, `04`, `06` and `07` they use fewer tokens. `SELECT name FROM users ORDER BY age DESC LIMIT 1` is hard to beat.
-- **pandas barely helps at this size.** It saves a few lines, but in characters and tokens it's roughly even with plain
-  Python (and longer on `03`): building a DataFrame costs about what the loop saved.
+- **Most of Chimni's lead over Python disappears against the right tool.** SQL and jq are about as short as Chimni;
+  on `04`, `07` and `10` they fit on one line where Chimni needs two. `SELECT name FROM users ORDER BY age DESC LIMIT 1` is hard to beat.
+- **pandas barely helps at this size.** It saves a few lines, but in characters it's roughly even with plain
+  Python (and longer on `03` and `05`): building a DataFrame costs about what the loop saved.
 - **Where Chimni differs is not length.** Output shape is part of the grammar, independent rows are visibly
   independent, and ties are deterministic. The SQL versions need an explicit `ORDER BY …, MIN(rowid)` to agree with
   the others when totals are equal; Chimni and Python keep first-seen order for free.
 
-Reproduce with `python benchmarks/size.py` (`pip install tiktoken` for the token columns).
-Whether models actually *write* Chimni more reliably than these is untested — [help measure it](CONTRIBUTING.md#good-first-contributions).
+Reproduce with `python benchmarks/size.py`.
 
 ## Mistakes are caught at the grammar level
 
@@ -176,7 +210,7 @@ $ cat bad.chimni
 $[orders]{(customer,total,extra)}
 @orders  #(customer)  +s(amount)  ^
 
-$ chimni bad.chimni '{"orders":[{"customer":"a","amount":1}]}'
+$ echo '[{"customer":"a","amount":1}]' | chimni bad.chimni
 run error at row 1, col 4: output (customer,total,extra) expects 3 fields but items have 2: customer, total.
 ```
 
@@ -190,11 +224,10 @@ output shape mismatches, `none` where the signature doesn't allow it, division b
 1. **Layout is a better carrier of structure than names.** Variable names exist mostly to wire one step to the next.
    If "the thing to my left" is the default wiring, names only appear where a human wants documentation.
 2. **Dependency should be visible.** A new row *can't* depend on the one above it unless it says so with a tie, so
-   parallelism and data flow can be read off the page by a person, a compiler, or a model.
+   parallelism and data flow can be read off the page by a person or a compiler.
 3. **Signatures are contracts.** Output shape is part of the grammar, so "I said pairs but built a set" is an error.
-4. **A closed vocabulary is compilable.** There's no model in the runtime. The design hypothesis is that a small,
-   regular notation is something an LLM can translate *into* reliably, while a deterministic interpreter checks and
-   runs the result. That hypothesis is **not yet tested** — it's on the roadmap.
+4. **A closed vocabulary is checkable.** Every symbol means one thing, so the interpreter can reject a malformed
+   program before it touches any data, and point at the row and column.
 
 Read the longer story, including what didn't work, in [docs/DESIGN.md](docs/DESIGN.md).
 
@@ -202,7 +235,12 @@ Read the longer story, including what didn't work, in [docs/DESIGN.md](docs/DESI
 
 Chimni is **v0.1, alpha**. It's a working interpreter for the dataflow core. It is *not* yet a general-purpose language.
 
-**Works:** the ten examples above · static grid checks · output-shape checks · `--trace` · Python API · zero dependencies · [in-browser playground](https://prat8897.github.io/chimni/).
+**Works:** the ten examples above · a jq-style CLI for JSON/CSV · `chimni fmt` · static grid checks · output-shape
+checks · `--trace` · Python API · zero dependencies · [in-browser playground](https://prat8897.github.io/chimni/) ·
+[VS Code highlighting](editors/vscode).
+
+**Can't express (by design, for now):** an OR inside a filter · outer and anti-joins · picking an item by position
+(median, day-to-day differences). See the [playground's Limits section](https://prat8897.github.io/chimni/#findings).
 
 **Not yet:** side effects (writing to a DB, sending a message) · calling one Chimni program from another ·
 user-defined cells · lazy streams (early exit currently computes everything, then stops) · nested data deeper than one
@@ -210,16 +248,17 @@ level · static shape inference (output shapes are checked when a row emits, not
 
 ## Roadmap
 
-- [x] Measure token cost against Python and idiomatic pandas/SQL/jq (`cl100k_base`; other tokenizers welcome)
-- [ ] `chimni translate`: Python/SQL/English → Chimni with an LLM, verified by differential testing
-- [ ] A translation benchmark: can models write correct Chimni from a spec?
+- [x] [In-browser playground](https://prat8897.github.io/chimni/) with an animated dataflow view
+- [x] jq-style CLI: JSON/CSV in, JSON/CSV out, inline programs
+- [x] `chimni fmt` and VS Code syntax highlighting
+- [x] Ties between grouped rows pair by key, not position
+- [ ] Backends: compile rows to SQL / DuckDB, so programs run on real-sized data
+- [ ] OR filters and outer joins
 - [ ] Side effects with explicit ordering
 - [ ] Program-to-program calls and user-defined cells
 - [ ] Lazy streams, so `^[1]` really stops early
 - [ ] Static shape inference
-- [ ] `chimni fmt` (column aligner) and editor syntax highlighting
-- [x] [In-browser playground](https://prat8897.github.io/chimni/) (Pyodide)
-- [ ] Backends: compile rows to SQL / pandas
+- [ ] Tree-sitter grammar, published VS Code extension
 
 ## Prior art and influences
 
@@ -232,7 +271,7 @@ If you know a language we should be learning from, please [open an issue](../../
 
 Chimni is young, and the design is still soft — which makes this a good time to shape it.
 Read [CONTRIBUTING.md](CONTRIBUTING.md), then pick something: a new cell, a new example, a sharper error message, a
-benchmark, or a critique of the grammar. Design arguments are welcome and encouraged.
+backend, or a critique of the grammar. Design arguments are welcome and encouraged.
 
 ```bash
 python -m unittest discover -s tests -v     # runs in well under a second

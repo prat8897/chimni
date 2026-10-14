@@ -1,4 +1,0 @@
-anthropic>=1.0      # real runs only
-PyYAML>=6
-tiktoken>=0.7       # code token counts (optional, recommended)
-pandas>=2.0         # the pandas condition and its reference solutions

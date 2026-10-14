@@ -1,4 +1,0 @@
-$[products]{range|none}
-@products  +m(price)  *(price)
-@products  +i(price)  *(price)
-.          .          ''-'      ^

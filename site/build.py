@@ -33,7 +33,7 @@ def pretty(args):
 
 
 def examples():
-    sizes = {d["example"]: d for d in size.measure(size.tokenizer())}
+    sizes = {d["example"]: d for d in size.measure()}
     out = []
     for c in sorted(EX.glob("*.chimni")):
         src = c.read_text(encoding="utf-8")

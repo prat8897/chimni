@@ -1,2 +1,0 @@
-$[players]{(team,avg)}
-@players  #(team)  +a(score)  ^

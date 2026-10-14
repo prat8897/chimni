@@ -1,2 +1,0 @@
-$[events,k]{days}
-@events  #(day)  +n  ?>[k]  *(day)  ^

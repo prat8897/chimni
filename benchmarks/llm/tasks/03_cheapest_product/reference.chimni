@@ -1,2 +1,0 @@
-$[products]{name|none}
-@products  +i(price)  *(name)  ^

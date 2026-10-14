@@ -1,2 +1,0 @@
-$[products]{n}
-@products  ?(stock)>[0]  +n  ^

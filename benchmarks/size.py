@@ -4,9 +4,6 @@
 Counts only code: comments and blank lines are dropped everywhere, and every column's
 characters are counted with whitespace squeezed to single spaces (Chimni pads cells to
 line up columns; Python indents; SQL wraps clauses - none of that should count).
-If `tiktoken` is installed, token columns are added (cl100k_base) - that is the number the
-"token efficiency" idea actually needs, and nobody has measured it properly yet.
-See CONTRIBUTING.md.
 
     python benchmarks/size.py            # text table
     python benchmarks/size.py --md       # markdown table (used in the README)
@@ -35,22 +32,13 @@ def squeezed(code):
     return " ".join(code.split())
 
 
-def tokenizer():
-    try:
-        import tiktoken
-        enc = tiktoken.get_encoding("cl100k_base")
-        return lambda s: len(enc.encode(s))
-    except Exception:
-        return None
-
-
 def alternative_path(stem):
     (path,) = list((EX / "compare").glob(stem + ".*"))
     return path
 
 
-def measure(count_tokens=None):
-    """One dict per example: lines and squeezed characters (and tokens) for py, alt and chimni."""
+def measure():
+    """One dict per example: lines and squeezed characters for py, alt and chimni."""
     rows = []
     for c in sorted(EX.glob("*.chimni")):
         alt = alternative_path(c.stem)
@@ -59,21 +47,15 @@ def measure(count_tokens=None):
         for k, code in codes.items():
             row[k + "_lines"] = len(code.splitlines())
             row[k + "_chars"] = len(squeezed(code))
-            if count_tokens:
-                row[k + "_tokens"] = count_tokens(code)
         rows.append(row)
     return rows
 
 
 def main():
     md = "--md" in sys.argv
-    count_tokens = tokenizer()
-    data = measure(count_tokens)
+    data = measure()
     keys = ["py_lines", "alt_lines", "chimni_lines", "py_chars", "alt_chars", "chimni_chars"]
     head = ["example", "alt", "py lines", "alt lines", "chimni lines", "py chars", "alt chars", "chimni chars"]
-    if count_tokens:
-        keys += ["py_tokens", "alt_tokens", "chimni_tokens"]
-        head += ["py tokens", "alt tokens", "chimni tokens"]
     rows = [[d["example"], d["alt_lang"]] + [d[k] for k in keys] for d in data]
     rows.append(["**total**", ""] + [sum(d[k] for d in data) for k in keys])
 

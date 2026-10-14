@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Chimni — layout is grammar</title>
-<meta name="description" content="Chimni is a 2D dataflow language where position is grammar. Try it in your browser: no install, the real interpreter runs on Pyodide.">
+<meta name="description" content="Chimni is a 2D dataflow language where position is grammar: pipelines you can read left to right, like jq you can actually read. Try it in your browser.">
 <meta property="og:title" content="Chimni — a 2D dataflow language where layout is grammar">
 <meta property="og:description" content="Right means 'consume the cell on my left'. A new row is an independent chain. Try it in your browser.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b1020'/%3E%3Cpath d='M8 11h10M8 21h16' stroke='%23ff8a3d' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='23' cy='11' r='3' fill='%23ffd166'/%3E%3C/svg%3E">
@@ -21,7 +21,7 @@
     <a href="#play">Playground</a>
     <a href="#learn">Learn</a>
     <a href="#compare">Compare</a>
-    <a href="#findings">Findings</a>
+    <a href="#findings">Limits</a>
     <a class="gh" href="https://github.com/prat8897/chimni">GitHub ★</a>
   </nav>
 </header>
@@ -90,7 +90,7 @@
   </div>
 
   <div class="flow">
-    <div class="field-label"><span>Dataflow</span><span class="hint">every cell and the value it produced · data moves → along a row · <code>'</code> reads the cell above</span></div>
+    <div class="field-label flow-head"><span>Dataflow</span><span class="hint">data moves → along a row · <code>'</code> reads the cell above · rows without ties run side by side</span><button id="replay" class="btn small" type="button">▶ Replay</button></div>
     <div id="grid" class="grid"></div>
   </div>
 </section>
@@ -170,7 +170,7 @@
   <div class="table-wrap">
     <table class="cmp" id="cmp-table">
       <thead>
-        <tr><th>Example</th><th class="num">Python</th><th>Alternative</th><th class="num">Alt</th><th class="num">Chimni</th><th class="bars">Tokens <span class="key"><i class="k-py"></i>py <i class="k-alt"></i>alt <i class="k-ch"></i>chimni</span></th></tr>
+        <tr><th>Example</th><th class="num">Python</th><th>Alternative</th><th class="num">Alt</th><th class="num">Chimni</th><th class="bars">Characters <span class="key"><i class="k-py"></i>py <i class="k-alt"></i>alt <i class="k-ch"></i>chimni</span></th></tr>
       </thead>
       <tbody></tbody>
       <tfoot></tfoot>
@@ -191,33 +191,58 @@
         <code>ORDER BY …, MIN(rowid)</code> to agree with the others when totals are equal.</p>
     </article>
     <article>
-      <h3>What's still unproven</h3>
-      <p>The bet is that a small, regular notation is easy for an LLM to write correctly and cheap to read.
-        Token counts above are <code>cl100k_base</code>; whether models actually <em>write</em> Chimni better is untested.
-        <a href="https://github.com/prat8897/chimni/blob/main/CONTRIBUTING.md">Help measure it.</a></p>
+      <h3>Where Chimni is weaker</h3>
+      <p>No OR in a filter, no outer joins, no picking an item by position. Some everyday questions can't be asked
+        at all, and the section below lists them rather than hiding them.</p>
     </article>
   </div>
 </section>
 
 <section id="findings" class="findings">
-  <h2>What we've found so far</h2>
-  <p class="sub">We're building a pre-registered benchmark to answer the question Chimni was designed around:
-    <b>can a model write correct Chimni from a plain-English spec as reliably as Python, pandas or SQL, and at what
-    token cost?</b> The hypotheses, 30 tasks and scoring rules were written down and frozen before any model saw a task.
-    No model results yet. Below is what building it turned up, including the parts that don't flatter Chimni.</p>
+  <h2>Limits &amp; tricks</h2>
+  <p class="sub">What the grid is good at, where it runs out, and one bug we found and fixed along the way.</p>
 
   <div class="finding-grid">
-    <article class="finding bad">
-      <span class="tag">language hazard</span>
-      <h3>Tying two grouped rows pairs groups by position, not by key</h3>
-      <p><code>''/'</code> on two lists of groups divides item <i>i</i> by item <i>i</i>. It checks the lengths match,
-        not the keys. If the two rows' groups come out in a different order, the answer is wrong and nothing
-        complains. Here the right answer is <code>a → 1.0, b → 100.0</code>.</p>
-      <pre>$[sales,returns]{(category,ratio)}
+    <article class="finding">
+      <span class="tag">trick</span>
+      <h3>Ties can do more than they look like they can</h3>
+      <p>"Second-highest distinct score" looks impossible without indexing. Four rows and three ties do it: subtract
+        the maximum, keep the negatives, take their maximum, add the maximum back. Powerful, though not easy to read.</p>
+      <pre>-- second-highest distinct score: subtract the max, keep the negatives,
+-- take their max, add the max back
+$[scores]{second|none}
+@scores  .     .      .
+@scores  +m    .      .
+.        &#x27;&#x27;-&#x27;  ?&lt;[0]  +m
+.        .     .      &#x27;+&#x27;&#x27;  ^</pre>
+      <button class="btn small try" type="button" data-program="-- second-highest distinct score: subtract the max, keep the negatives,
+-- take their max, add the max back
+$[scores]{second|none}
+@scores  .     .      .
+@scores  +m    .      .
+.        &#x27;&#x27;-&#x27;  ?&lt;[0]  +m
+.        .     .      &#x27;+&#x27;&#x27;  ^
+" data-inputs="{
+  &quot;scores&quot;: [
+    9,
+    3,
+    9,
+    7
+  ]
+}">Run it in the playground ▸</button>
+    </article>
+
+    <article class="finding">
+      <span class="tag">fixed in this version</span>
+      <h3>Grouped rows now line up by key</h3>
+      <p>Tying two grouped rows used to pair groups by <i>position</i>. If the groups came out in a different order,
+        the answer was silently wrong. Now they pair by key, and rows whose keys differ are an error that names the
+        missing keys. This one gives <code>a → 1.0, b → 100.0</code>, as it should.</p>
+      <pre>$[sales,returns]{(category,per_return)}
 @sales    #(category)  +s(revenue)
 @returns  #(category)  +s(units)
 .         .            &#x27;&#x27;/&#x27;          ^</pre>
-      <button class="btn small try" type="button" data-program="$[sales,returns]{(category,ratio)}
+      <button class="btn small try" type="button" data-program="$[sales,returns]{(category,per_return)}
 @sales    #(category)  +s(revenue)
 @returns  #(category)  +s(units)
 .         .            &#x27;&#x27;/&#x27;          ^
@@ -246,56 +271,23 @@
     </article>
 
     <article class="finding">
-      <span class="tag">more expressive than expected</span>
-      <h3>Ties can do more than the docs suggest, but it's hard to read</h3>
-      <p>We filed "second-highest distinct score" as impossible in Chimni. It isn't: four rows and three ties do it.
-        It stays in the benchmark as a hard task. Whether a model can find tricks like this is part of what we're
-        measuring.</p>
-      <pre>-- second-highest distinct score: subtract the max, keep the negatives,
--- take their max, add the max back
-$[scores]{second|none}
-@scores  .     .      .
-@scores  +m    .      .
-.        &#x27;&#x27;-&#x27;  ?&lt;[0]  +m
-.        .     .      &#x27;+&#x27;&#x27;  ^</pre>
-      <button class="btn small try" type="button" data-program="-- second-highest distinct score: subtract the max, keep the negatives,
--- take their max, add the max back
-$[scores]{second|none}
-@scores  .     .      .
-@scores  +m    .      .
-.        &#x27;&#x27;-&#x27;  ?&lt;[0]  +m
-.        .     .      &#x27;+&#x27;&#x27;  ^
-" data-inputs="{
-  &quot;scores&quot;: [
-    9,
-    3,
-    9,
-    7
-  ]
-}">Run it in the playground ▸</button>
+      <span class="tag">limit</span>
+      <h3>Four everyday questions Chimni can't ask</h3>
+      <p>An <b>OR</b> filter ("refunds or anything over $100"), an <b>anti-join</b> ("customers with no orders"),
+        a <b>median</b>, and <b>day-to-day differences</b>. There's no OR, the only join is an inner join, and nothing
+        can address an item by its position.</p>
     </article>
 
     <article class="finding">
-      <span class="tag">cost</span>
-      <h3>Teaching Chimni makes the prompt 2.5× longer</h3>
-      <p>A model already knows Python; it has to be taught Chimni. With the same conventions and ten worked examples,
-        the system prompt is <b>~4.7k tokens for Chimni</b> against ~1.9k for Python, ~2.0k for pandas and ~1.6k for
-        SQL. Shorter programs have to make up for that before Chimni is cheaper overall, and our pre-registered
-        prediction is that they won't.</p>
-    </article>
-
-    <article class="finding">
-      <span class="tag">by design</span>
-      <h3>Four everyday tasks Chimni can't express</h3>
-      <p>An <b>OR</b> filter, an <b>anti-join</b> ("customers with no orders"), a <b>median</b>, and
-        <b>day-to-day differences</b>. There's no OR, the only join is an inner join, and nothing can address an item by
-        its position. The benchmark reports these separately instead of hiding them.</p>
+      <span class="tag">limit</span>
+      <h3>Ties need somewhere to land</h3>
+      <p>A tie reads the cell above <i>in the same column</i>, and that cell can't be empty. So rows that a later row
+        reads are padded with <code>.</code> out to the right column. <code>chimni fmt</code> lines the columns up
+        so you can see which cell a tie reads.</p>
     </article>
   </div>
 
-  <p class="more">Details: <a href="https://github.com/prat8897/chimni/blob/main/benchmarks/llm/FINDINGS.md">FINDINGS.md</a> ·
-    Hypotheses and method: <a href="https://github.com/prat8897/chimni/blob/main/benchmarks/llm/PREREGISTRATION.md">PREREGISTRATION.md</a> ·
-    Run it yourself: <a href="https://github.com/prat8897/chimni/tree/main/benchmarks/llm">benchmarks/llm</a></p>
+  <p class="more">Design notes and open questions: <a href="https://github.com/prat8897/chimni/blob/main/docs/DESIGN.md">DESIGN.md</a></p>
 </section>
 
 </main>

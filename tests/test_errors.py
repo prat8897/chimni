@@ -56,6 +56,16 @@ class RuntimeChecks(unittest.TestCase):
         self.bad("$[orders]{(customer,total,extra)}\n@orders  #(customer)  +s(amount)  ^\n",
                  dict(orders=[{"customer": "a", "amount": 1}]), "expects 3 fields")
 
+    def test_tied_groups_with_different_keys_are_an_error(self):
+        src = "$[a,b]{(k,r)}\n@a  #(k)  +s(v)\n@b  #(k)  +s(v)\n.   .     ''/'  ^\n"
+        e = self.bad(src, dict(a=[{"k": "x", "v": 1}], b=[{"k": "y", "v": 1}]), "different keys")
+        self.assertIn("k='x'", str(e))
+        self.assertEqual((e.row, e.col), (3, 3))
+
+    def test_tied_groups_with_different_key_fields_are_an_error(self):
+        src = "$[a,b]{(k,r)}\n@a  #(k)  +s(v)\n@b  #(j)  +s(v)\n.   .     ''/'  ^\n"
+        self.bad(src, dict(a=[{"k": "x", "v": 1}], b=[{"j": "x", "v": 1}]), "cannot pair rows keyed by k")
+
     def test_none_needs_permission_in_the_signature(self):
         self.bad("$[xs]{a}\n@xs  +m(v)  *(v)  ^\n", dict(xs=[]), "does not allow it")
 

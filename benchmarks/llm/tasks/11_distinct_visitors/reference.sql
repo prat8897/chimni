@@ -1,1 +1,0 @@
-SELECT COUNT(DISTINCT visitor) FROM visits;

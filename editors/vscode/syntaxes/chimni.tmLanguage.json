@@ -1,0 +1,71 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Chimni",
+  "scopeName": "source.chimni",
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#signature" },
+    { "include": "#cell" }
+  ],
+  "repository": {
+    "comment": {
+      "patterns": [
+        { "name": "comment.line.double-dash.chimni", "match": "^\\s*--.*$" },
+        { "name": "comment.line.double-dash.chimni", "match": "(?<=\\s)--(?=\\s|$).*$" }
+      ]
+    },
+    "signature": {
+      "name": "meta.signature.chimni",
+      "match": "^\\s*(\\$)(\\w*)(\\[)([^\\]]*)(\\])(\\{)([^}]*)(\\})",
+      "captures": {
+        "1": { "name": "keyword.other.signature.chimni" },
+        "2": { "name": "entity.name.function.chimni" },
+        "3": { "name": "punctuation.definition.parameters.begin.chimni" },
+        "4": { "name": "variable.parameter.chimni" },
+        "5": { "name": "punctuation.definition.parameters.end.chimni" },
+        "6": { "name": "punctuation.definition.outputs.begin.chimni" },
+        "7": { "name": "entity.name.type.output.chimni" },
+        "8": { "name": "punctuation.definition.outputs.end.chimni" }
+      }
+    },
+    "cell": {
+      "patterns": [
+        { "name": "variable.other.source.chimni", "match": "@\\w+" },
+        { "name": "keyword.operator.tie.chimni", "match": "'+" },
+        { "name": "keyword.control.emit.chimni", "match": "\\^" },
+        { "name": "keyword.operator.aggregate.chimni", "match": "\\+[snamir]\\b" },
+        { "name": "keyword.operator.sort.chimni", "match": "~[/\\\\]" },
+        { "name": "keyword.operator.filter.chimni", "match": "\\?" },
+        { "name": "keyword.operator.comparison.chimni", "match": ">=|<=|!=|>|<|=" },
+        { "name": "keyword.operator.group.chimni", "match": "[#%]" },
+        { "name": "keyword.operator.pick.chimni", "match": "\\*(?=\\()" },
+        { "name": "keyword.operator.text.chimni", "match": "(?<![\\w])(_[lu]|;w)\\b" },
+        { "name": "keyword.operator.arithmetic.chimni", "match": "[-+*/]" },
+        { "name": "punctuation.separator.empty-cell.chimni", "match": "(?:^|(?<=\\s))\\.(?=\\s|$)" },
+        { "include": "#field" },
+        { "include": "#setting" }
+      ]
+    },
+    "field": {
+      "match": "(\\()([\\w,]*)(\\))",
+      "captures": {
+        "1": { "name": "punctuation.section.parens.chimni" },
+        "2": { "name": "variable.other.field.chimni" },
+        "3": { "name": "punctuation.section.parens.chimni" }
+      }
+    },
+    "setting": {
+      "begin": "\\[",
+      "end": "\\]",
+      "beginCaptures": { "0": { "name": "punctuation.section.brackets.chimni" } },
+      "endCaptures": { "0": { "name": "punctuation.section.brackets.chimni" } },
+      "patterns": [
+        { "name": "string.quoted.double.chimni", "match": "\"[^\"]*\"" },
+        { "name": "constant.numeric.chimni", "match": "-?\\d+(?:\\.\\d+)?" },
+        { "name": "constant.language.default.chimni", "match": "\\b_\\b" },
+        { "name": "punctuation.separator.rung.chimni", "match": "[:,]" },
+        { "name": "variable.parameter.chimni", "match": "[A-Za-z_]\\w*" }
+      ]
+    }
+  }
+}

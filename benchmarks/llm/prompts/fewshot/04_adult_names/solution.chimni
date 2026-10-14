@@ -1,3 +1,0 @@
--- names of users aged 18+, alphabetical
-$[users]{names}
-@users  ?(age)>=[18]  *(name)  ~/  ^

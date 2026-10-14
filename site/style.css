@@ -175,7 +175,35 @@ main > section { max-width: 1200px; margin: 0 auto; padding: 72px 16px 24px; }
   border: 1px solid var(--line); border-radius: var(--radius);
 }
 .flow .hint code { font-size: 12px; }
-.grid { display: grid; gap: 10px 0; overflow-x: auto; padding-bottom: 6px; }
+.flow-head { align-items: center; }
+.flow-head .hint { flex: 1; text-align: right; }
+.grid { position: relative; display: grid; gap: 10px 0; overflow-x: auto; padding: 4px 4px 6px 20px; }
+.grid svg.ties { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
+.grid svg.ties path { fill: none; stroke: var(--blue); stroke-width: 1.6; stroke-dasharray: 1; stroke-dashoffset: 0; opacity: .85; }
+.grid svg.ties marker path { fill: var(--blue); stroke: none; }
+
+/* the animation: each cell fires at step --t; a tie's arrow draws just before its cell fires */
+:root { --step: 420ms; }
+.grid.play .gbox { animation: fire .7s ease both; animation-delay: calc(var(--t) * var(--step)); }
+.grid.play .gbox .val { animation: reveal .35s ease both; animation-delay: calc(var(--t) * var(--step) + 180ms); }
+.grid.play .garrow.on { animation: flow .5s ease both; animation-delay: calc(var(--t) * var(--step) + 200ms); }
+.grid.play svg.ties path { animation: draw .45s ease both; animation-delay: calc(var(--t) * var(--step) + 200ms); }
+.grid.play .gbox.skipped { animation: none; }
+@keyframes fire {
+  0% { opacity: .3; transform: translateY(3px); }
+  35% { opacity: 1; transform: none; box-shadow: 0 0 0 2px var(--orange), 0 0 22px rgba(255,138,61,.5); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes reveal { from { opacity: 0; } to { opacity: 1; } }
+@keyframes flow {
+  0% { opacity: .2; transform: translateX(-6px); color: var(--dim); }
+  60% { opacity: 1; transform: translateX(2px); color: var(--orange); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .grid.play .gbox, .grid.play .gbox .val, .grid.play .garrow.on, .grid.play svg.ties path { animation: none; }
+}
 .gcell { display: flex; align-items: stretch; }
 .gbox {
   width: 168px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px;

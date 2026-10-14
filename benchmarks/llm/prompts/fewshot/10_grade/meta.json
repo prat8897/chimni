@@ -1,9 +1,0 @@
-{
-  "inputs": [
-    "score"
-  ],
-  "sql": {
-    "tables": {},
-    "output": "scalar"
-  }
-}

@@ -25,8 +25,8 @@ Tense in Sanskrit is a property of the word. Dependency in Chimni is a property 
 1. **Position is grammar.** Anything layout can say, names shouldn't have to.
 2. **Contracts up front.** The signature declares inputs and the *shape* of each output, and the interpreter holds the
    program to it.
-3. **Closed vocabulary.** Every symbol means one thing, so the language is deterministic and can be checked without a
-   model. Anything outside the vocabulary needs a new symbol or an escape hatch, deliberately.
+3. **Closed vocabulary.** Every symbol means one thing, so the language is deterministic and can be checked without
+   guessing. Anything outside the vocabulary needs a new symbol or an escape hatch, deliberately.
 4. **Read it, don't decode it.** A row should read left to right like a sentence.
 5. **Errors name a row and a column.**
 
@@ -37,26 +37,27 @@ Tense in Sanskrit is a property of the word. Dependency in Chimni is a property 
   reason tuple outputs enforce their arity.
 - **`customer` and `amount` aren't inputs.** They're fields *inside* `orders`. The input list holds only what the
   caller supplies.
-- **"The LLM is the compiler" turned out to be unnecessary.** Once every symbol had one meaning and layout carried the
-  dependencies, the language became a deterministic dataflow DSL. A model is more useful as a *translator into* Chimni,
-  with an ordinary interpreter doing the checking and running.
+- **The first sketch needed something to interpret it.** The early notation was loose enough that it needed a
+  person, or a model, to read meaning into it. Once every symbol had one meaning and layout carried the dependencies,
+  it became an ordinary deterministic language: a plain interpreter checks and runs it.
 - **The ladder example was wrong.** `?>[90:A, …]` used a strict `>` where the Python used `>=`, so a score of exactly
   90 got the wrong grade. The differential tests are there to catch this class of slip.
+- **Tied grouped rows paired up by position.** `''/'` on two grouped rows divided item *i* by item *i*, so if the
+  groups came out in a different order the answer was silently wrong. Aggregate records now pair up **by key**, and
+  rows with different keys are an error.
 - **`+m` was ambiguous.** Does it return the max *value* or the max *item*? It returns the item; `+m(f) *(f)` gives
   the value.
 
 ## Open questions
 
-**Is it actually cheaper for an LLM?** The original motivation was token efficiency. Chimni is clearly smaller in
-characters (see the README), but tokenizers are trained on natural language and code, and dense symbols can cost *more*
-tokens than plain words. Padding spaces and runs of `.` may also tokenize badly. Nobody has measured this yet.
-
-**Can a model write it reliably?** The bet is that a small regular notation is easier to generate correctly than
-Python. That needs a benchmark: spec in, program out, check against hidden tests.
-
 **Whitespace sensitivity.** Layout carries meaning *only through cell order*, not through the number of spaces, which
 makes the language robust to re-flowing. But tools that wrap long lines or strip newlines will still change a
-program's meaning, since a new line is a new row. A canonical formatter would help.
+program's meaning, since a new line is a new row. `chimni fmt` keeps columns aligned so ties are easy to check by
+eye, but it can't protect against a tool that joins lines.
+
+**Ties are powerful but can be cryptic.** "Second-highest distinct value" takes four rows and three ties (subtract the
+max, keep the negatives, take their max, add the max back). It works, but it is a puzzle to read. Is that a missing
+cell, or acceptable?
 
 **Characters with baggage.** `\` is an escape character in JSON, shells and most string literals; `'` is a quote
 character almost everywhere. Both survive in the interpreter, but pasting a program into some pipelines may mangle

@@ -1,2 +1,0 @@
-$[transactions]{total}
-@transactions  ?(type)=["refund"]  +s(amount)  ^

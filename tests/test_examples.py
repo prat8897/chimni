@@ -174,6 +174,24 @@ class SampleInputs(unittest.TestCase):
                 self.assertEqual(chimni.load(str(EX / (stem + ".chimni"))).run(args), reference(stem)(**args))
 
 
+class KeyedTies(unittest.TestCase):
+    """Two grouped rows combined by a tie pair up by key, not by position."""
+
+    def test_groups_in_a_different_order_still_pair_by_key(self):
+        prog = chimni.compile_source(
+            "$[sales,returns]{(category,ratio)}\n"
+            "@sales    #(category)  +s(revenue)\n"
+            "@returns  #(category)  +s(units)\n"
+            ".         .            ''/'          ^\n")
+        got = prog(sales=[{"category": "a", "revenue": 10}, {"category": "b", "revenue": 100}],
+                   returns=[{"category": "b", "units": 1}, {"category": "a", "units": 10}])
+        self.assertEqual(got, [("a", 1.0), ("b", 100.0)])
+
+    def test_plain_streams_still_pair_by_position(self):
+        prog = chimni.compile_source("$[xs,ys]{zs}\n@xs\n@ys\n''-'  ^\n")
+        self.assertEqual(prog(xs=[10, 20], ys=[1, 2]), [9, 18])
+
+
 class FixedExamples(unittest.TestCase):
     def test_summarize_orders_from_the_original_conversation(self):
         orders = [{"customer": "asha", "amount": 120}, {"customer": "ravi", "amount": 40},

@@ -1,5 +1,0 @@
--- each category's share of total sales; row 3 is a join: (row 1) / (row 2), by position
-$[sales]{(cat,share)}
-@sales  #(cat)  +s(amount)
-@sales  .       +s(amount)
-.       .       ''/'        ^

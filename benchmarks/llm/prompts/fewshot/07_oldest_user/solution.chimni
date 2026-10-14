@@ -1,3 +1,0 @@
--- name of the oldest user, or none if there are no users
-$[users]{name|none}
-@users  +m(age)  *(name)  ^

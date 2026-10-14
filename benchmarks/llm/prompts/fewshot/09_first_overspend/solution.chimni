@@ -1,3 +1,0 @@
--- index of the first moment the running total goes over budget
-$[expenses,budget]{i|none}
-@expenses  +r  ?>[budget]  ^[1](i)

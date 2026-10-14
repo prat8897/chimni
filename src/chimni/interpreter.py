@@ -162,12 +162,43 @@ def item_op(op, x, y):
     return r
 
 
+def record_keys(stream):
+    """For a stream of aggregate records, each item's key (its fields other than the value); otherwise None."""
+    if not stream or not all(isinstance(x, Record) and x.vf is not None for x in stream):
+        return None
+    names = [k for k in stream[0] if k != stream[0].vf]
+    if any([k for k in x if k != x.vf] != names for x in stream):
+        return None
+    return [tuple((k, x[k]) for k in names) for x in stream]
+
+
+def align_by_key(a, b):
+    """Two keyed streams pair up by key, in the left stream's order. Different keys are an error."""
+    ka, kb = record_keys(a), record_keys(b)
+    if ka is None or kb is None or ka == kb:
+        return b
+    if [[k for k, _ in key] for key in ka[:1]] != [[k for k, _ in key] for key in kb[:1]]:
+        raise RunError(f"cannot pair rows keyed by {', '.join(k for k, _ in ka[0])} "
+                       f"with rows keyed by {', '.join(k for k, _ in kb[0])}")
+    index = dict(zip(kb, b))
+    if len(index) != len(kb) or len(set(ka)) != len(ka):
+        raise RunError("a key appears twice in a row, so the rows cannot be paired by key")
+    if set(ka) != set(index):
+        show = lambda keys: ", ".join(" ".join(f"{k}={v!r}" for k, v in key) for key in keys[:3])
+        left = [k for k in ka if k not in index]
+        right = [k for k in kb if k not in set(ka)]
+        raise RunError(f"the streams being combined have different keys: {show(left)} only on the left of the "
+                       f"operator, {show(right)} only on the right")
+    return [index[k] for k in ka]
+
+
 def binop(op, a, b):
     if isinstance(a, Grouped) or isinstance(b, Grouped):
         raise RunError("aggregate the groups before doing arithmetic on them")
     if isinstance(a, list) and isinstance(b, list):
         if len(a) != len(b):
             raise RunError(f"streams differ in length ({len(a)} vs {len(b)})")
+        b = align_by_key(a, b)
         return [item_op(op, x, y) for x, y in zip(a, b)]
     if isinstance(a, list):
         return [item_op(op, x, b) for x in a]

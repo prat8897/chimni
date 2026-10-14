@@ -16,19 +16,17 @@ Python 3.9+. The interpreter deliberately uses only the standard library.
 
 ## Good first contributions
 
-- **Measure tokens.** `python benchmarks/size.py --md` reports `cl100k_base` tokens when `tiktoken` is installed. Try other
-  tokenizers too. Is Chimni cheaper or more expensive than pandas/SQL/jq for an LLM? Include the raw numbers.
 - **Write a new example.** Take a short Python or SQL script, port it to Chimni, and add `examples/NN_name.chimni`,
   `examples/python/NN_name.py`, the idiomatic pandas/SQL/jq version in `examples/compare/`, a sample input in
   `examples/inputs/NN_name.json`, and a generator in `tests/test_examples.py`. If the port was awkward, that's the most
   valuable part — open an issue describing what was missing.
 - **Make an error message better.** Try to break a program on purpose; if the message didn't point at the problem,
   fix it and add a test in `tests/test_errors.py`.
-- **A canonical formatter** (`chimni fmt`) that aligns cells into columns.
-- **Editor support:** TextMate/Tree-sitter grammar, VS Code extension.
+- **Editor support:** a Tree-sitter grammar, publishing the VS Code extension in `editors/vscode/`, or a grammar for
+  another editor.
+- **A SQL / DuckDB backend:** compile a row to a query, so programs run on data that doesn't fit in memory.
+- **More CLI input formats:** Parquet, TSV with headers, NDJSON from APIs.
 - **Playground features:** the site lives in `site/` (`python site/build.py`, then serve `_site/`).
-- **Translation eval:** give a model a spec and the language reference, and score the Chimni it writes against hidden
-  tests.
 
 ## Adding a cell (a new symbol)
 

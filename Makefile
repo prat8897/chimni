@@ -1,21 +1,12 @@
 PYTHON ?= python
-MAX_COST ?= 20
 
-.PHONY: test bench-test bench-dry bench-freeze bench-run
+.PHONY: test site serve
 
 test:
 	$(PYTHON) -m unittest discover -s tests
 
-bench-test:
-	$(PYTHON) -m unittest discover -s benchmarks/llm/tests -t .
+site:
+	$(PYTHON) site/build.py
 
-bench-dry:
-	$(PYTHON) -m benchmarks.llm.run --dry-run
-	$(PYTHON) -m benchmarks.llm.report --dry-run
-
-bench-freeze:
-	$(PYTHON) -m benchmarks.llm.run --freeze
-
-bench-run:
-	$(PYTHON) -m benchmarks.llm.run --max-cost $(MAX_COST)
-	$(PYTHON) -m benchmarks.llm.report
+serve: site
+	$(PYTHON) -m http.server -d _site 8000

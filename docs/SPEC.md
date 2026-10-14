@@ -69,7 +69,13 @@ Python: `chimni.load("f.chimni")(in1, in2)`
 ### Arithmetic
 
 Operands may be streams, records or scalars. A record's *value field* is what gets computed on, and the result stays in
-that record. A scalar broadcasts across a stream; two streams combine by position and must be the same length.
+that record. A scalar broadcasts across a stream. Two streams must be the same length and combine item by item:
+
+- two streams of **aggregate records** (from `#(k) +s(..)` and friends) pair up **by key**, in the left stream's order,
+  so two grouped rows line up even if their groups came out in a different order. Different keys, or keys under
+  different field names, are a run error;
+- any other two streams pair up **by position**.
+
 Division by zero is a run error.
 
 ## Execution model

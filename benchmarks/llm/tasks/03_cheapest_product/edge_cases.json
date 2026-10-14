@@ -1,0 +1,38 @@
+[
+  {
+    "name": "empty",
+    "input": {
+      "products": []
+    }
+  },
+  {
+    "name": "tie for cheapest",
+    "input": {
+      "products": [
+        {
+          "name": "a",
+          "price": 5
+        },
+        {
+          "name": "b",
+          "price": 2
+        },
+        {
+          "name": "c",
+          "price": 2
+        }
+      ]
+    }
+  },
+  {
+    "name": "single",
+    "input": {
+      "products": [
+        {
+          "name": "only",
+          "price": 9
+        }
+      ]
+    }
+  }
+]

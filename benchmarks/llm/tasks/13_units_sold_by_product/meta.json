@@ -1,0 +1,34 @@
+{
+  "title": "Units sold per product",
+  "difficulty": "medium",
+  "features": [
+    "join",
+    "group",
+    "sum",
+    "sort desc"
+  ],
+  "expressible": true,
+  "inputs": [
+    "products",
+    "sales"
+  ],
+  "conditions": [
+    "python",
+    "chimni",
+    "pandas",
+    "sql"
+  ],
+  "sql": {
+    "tables": {
+      "products": [
+        "id",
+        "name"
+      ],
+      "sales": [
+        "product_id",
+        "units"
+      ]
+    },
+    "output": "rows"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "inputs": [
+    "transactions",
+    "limit"
+  ],
+  "sql": {
+    "tables": {
+      "transactions": [
+        "id",
+        "amount"
+      ]
+    },
+    "output": "scalar"
+  }
+}

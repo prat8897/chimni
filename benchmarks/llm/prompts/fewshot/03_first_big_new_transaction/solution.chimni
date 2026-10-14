@@ -1,0 +1,3 @@
+-- first never-seen-before transaction whose amount is over the limit
+$[transactions,limit]{id|none}
+@transactions  %(id)  ?(amount)>[limit]  ^[1](id)

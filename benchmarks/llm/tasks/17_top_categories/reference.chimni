@@ -1,0 +1,2 @@
+$[items,n]{(category,count)}
+@items  #(category)  +n  ~\(count)  ^[n]

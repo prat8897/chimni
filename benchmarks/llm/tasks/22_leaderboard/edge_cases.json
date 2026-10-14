@@ -1,0 +1,30 @@
+[
+  {
+    "name": "empty",
+    "input": {
+      "players": []
+    }
+  },
+  {
+    "name": "same score sorts by name",
+    "input": {
+      "players": [
+        {
+          "name": "zed",
+          "score": 3,
+          "country": "in"
+        },
+        {
+          "name": "amy",
+          "score": 3,
+          "country": "us"
+        },
+        {
+          "name": "bob",
+          "score": 9,
+          "country": "in"
+        }
+      ]
+    }
+  }
+]

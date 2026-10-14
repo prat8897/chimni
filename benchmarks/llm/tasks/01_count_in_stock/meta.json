@@ -1,0 +1,27 @@
+{
+  "title": "Count products in stock",
+  "difficulty": "easy",
+  "features": [
+    "filter",
+    "count"
+  ],
+  "expressible": true,
+  "inputs": [
+    "products"
+  ],
+  "conditions": [
+    "python",
+    "chimni",
+    "pandas",
+    "sql"
+  ],
+  "sql": {
+    "tables": {
+      "products": [
+        "name",
+        "stock"
+      ]
+    },
+    "output": "scalar"
+  }
+}

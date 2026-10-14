@@ -1,0 +1,27 @@
+{
+  "title": "Distinct visitors",
+  "difficulty": "medium",
+  "features": [
+    "dedupe",
+    "count"
+  ],
+  "expressible": true,
+  "inputs": [
+    "visits"
+  ],
+  "conditions": [
+    "python",
+    "chimni",
+    "pandas",
+    "sql"
+  ],
+  "sql": {
+    "tables": {
+      "visits": [
+        "visitor",
+        "page"
+      ]
+    },
+    "output": "scalar"
+  }
+}

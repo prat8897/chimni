@@ -1,0 +1,2 @@
+$[orders]{(customer,count)}
+@orders  #(customer)  +n  ~\(count)  ^

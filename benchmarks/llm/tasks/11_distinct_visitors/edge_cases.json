@@ -1,0 +1,23 @@
+[
+  {
+    "name": "empty",
+    "input": {
+      "visits": []
+    }
+  },
+  {
+    "name": "same visitor twice",
+    "input": {
+      "visits": [
+        {
+          "visitor": 1,
+          "page": "/"
+        },
+        {
+          "visitor": 1,
+          "page": "/a"
+        }
+      ]
+    }
+  }
+]

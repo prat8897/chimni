@@ -1,0 +1,29 @@
+{
+  "title": "Price range",
+  "difficulty": "medium",
+  "features": [
+    "max item",
+    "min item",
+    "tie arithmetic",
+    "none"
+  ],
+  "expressible": true,
+  "inputs": [
+    "products"
+  ],
+  "conditions": [
+    "python",
+    "chimni",
+    "pandas",
+    "sql"
+  ],
+  "sql": {
+    "tables": {
+      "products": [
+        "name",
+        "price"
+      ]
+    },
+    "output": "scalar"
+  }
+}

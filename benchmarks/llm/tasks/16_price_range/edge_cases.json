@@ -1,0 +1,19 @@
+[
+  {
+    "name": "empty",
+    "input": {
+      "products": []
+    }
+  },
+  {
+    "name": "single product",
+    "input": {
+      "products": [
+        {
+          "name": "a",
+          "price": 7
+        }
+      ]
+    }
+  }
+]

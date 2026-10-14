@@ -1,0 +1,17 @@
+[
+  {
+    "name": "empty",
+    "input": {
+      "scores": []
+    }
+  },
+  {
+    "name": "all equal",
+    "input": {
+      "scores": [
+        4,
+        4
+      ]
+    }
+  }
+]

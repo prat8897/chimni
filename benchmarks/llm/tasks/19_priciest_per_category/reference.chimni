@@ -1,0 +1,2 @@
+$[products]{(category,name)}
+@products  #(category)  +m(price)  *(category,name)  ^

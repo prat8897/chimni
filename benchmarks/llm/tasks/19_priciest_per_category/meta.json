@@ -1,0 +1,29 @@
+{
+  "title": "Most expensive product per category",
+  "difficulty": "medium",
+  "features": [
+    "group",
+    "max item per group",
+    "multi-pick"
+  ],
+  "expressible": true,
+  "inputs": [
+    "products"
+  ],
+  "conditions": [
+    "python",
+    "chimni",
+    "pandas",
+    "sql"
+  ],
+  "sql": {
+    "tables": {
+      "products": [
+        "name",
+        "category",
+        "price"
+      ]
+    },
+    "output": "rows"
+  }
+}

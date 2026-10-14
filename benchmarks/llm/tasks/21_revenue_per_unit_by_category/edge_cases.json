@@ -1,0 +1,30 @@
+[
+  {
+    "name": "empty",
+    "input": {
+      "sales": []
+    }
+  },
+  {
+    "name": "weighted, not averaged",
+    "input": {
+      "sales": [
+        {
+          "category": "a",
+          "revenue": 10,
+          "units": 1
+        },
+        {
+          "category": "a",
+          "revenue": 10,
+          "units": 9
+        },
+        {
+          "category": "b",
+          "revenue": 3,
+          "units": 3
+        }
+      ]
+    }
+  }
+]

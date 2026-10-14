@@ -1,0 +1,25 @@
+{
+  "title": "Unique tags",
+  "difficulty": "easy",
+  "features": [
+    "lowercase",
+    "dedupe",
+    "sort"
+  ],
+  "expressible": true,
+  "inputs": [
+    "tags"
+  ],
+  "conditions": [
+    "python",
+    "chimni",
+    "pandas",
+    "sql"
+  ],
+  "sql": {
+    "tables": {
+      "tags": "value"
+    },
+    "output": "column"
+  }
+}

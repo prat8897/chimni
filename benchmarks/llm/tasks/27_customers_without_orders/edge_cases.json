@@ -1,0 +1,35 @@
+[
+  {
+    "name": "no orders at all",
+    "input": {
+      "customers": [
+        {
+          "id": 1,
+          "name": "a"
+        },
+        {
+          "id": 2,
+          "name": "b"
+        }
+      ],
+      "orders": []
+    }
+  },
+  {
+    "name": "everyone ordered",
+    "input": {
+      "customers": [
+        {
+          "id": 1,
+          "name": "a"
+        }
+      ],
+      "orders": [
+        {
+          "customer_id": 1,
+          "amount": 3
+        }
+      ]
+    }
+  }
+]

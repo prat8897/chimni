@@ -1,0 +1,29 @@
+[
+  {
+    "name": "empty",
+    "input": {
+      "readings": []
+    }
+  },
+  {
+    "name": "all negative",
+    "input": {
+      "readings": [
+        -5,
+        -2,
+        -9
+      ]
+    }
+  },
+  {
+    "name": "repeated max",
+    "input": {
+      "readings": [
+        3,
+        7,
+        7,
+        1
+      ]
+    }
+  }
+]

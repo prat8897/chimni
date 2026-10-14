@@ -1,0 +1,29 @@
+[
+  {
+    "name": "empty",
+    "input": {
+      "scores": []
+    }
+  },
+  {
+    "name": "first occurrence order",
+    "input": {
+      "scores": [
+        60,
+        95,
+        80,
+        91
+      ]
+    }
+  },
+  {
+    "name": "boundaries",
+    "input": {
+      "scores": [
+        90,
+        75,
+        74
+      ]
+    }
+  }
+]

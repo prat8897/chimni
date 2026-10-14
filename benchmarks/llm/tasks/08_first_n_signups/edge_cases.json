@@ -1,0 +1,49 @@
+[
+  {
+    "name": "n is zero",
+    "input": {
+      "users": [
+        {
+          "name": "a",
+          "joined": 1
+        }
+      ],
+      "n": 0
+    }
+  },
+  {
+    "name": "n is one",
+    "input": {
+      "users": [
+        {
+          "name": "a",
+          "joined": 1
+        },
+        {
+          "name": "b",
+          "joined": 2
+        }
+      ],
+      "n": 1
+    }
+  },
+  {
+    "name": "fewer users than n",
+    "input": {
+      "users": [
+        {
+          "name": "a",
+          "joined": 1
+        }
+      ],
+      "n": 4
+    }
+  },
+  {
+    "name": "no users",
+    "input": {
+      "users": [],
+      "n": 2
+    }
+  }
+]

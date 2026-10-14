@@ -1,0 +1,25 @@
+{
+  "title": "Grades with given cut-offs",
+  "difficulty": "medium",
+  "features": [
+    "ladder with input thresholds"
+  ],
+  "expressible": true,
+  "inputs": [
+    "scores",
+    "a_cut",
+    "b_cut"
+  ],
+  "conditions": [
+    "python",
+    "chimni",
+    "pandas",
+    "sql"
+  ],
+  "sql": {
+    "tables": {
+      "scores": "value"
+    },
+    "output": "column"
+  }
+}

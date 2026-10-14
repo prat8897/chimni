@@ -1,0 +1,42 @@
+[
+  {
+    "name": "empty",
+    "input": {
+      "products": []
+    }
+  },
+  {
+    "name": "all out of stock",
+    "input": {
+      "products": [
+        {
+          "name": "a",
+          "stock": 0
+        },
+        {
+          "name": "b",
+          "stock": 0
+        }
+      ]
+    }
+  },
+  {
+    "name": "mixed",
+    "input": {
+      "products": [
+        {
+          "name": "a",
+          "stock": 3
+        },
+        {
+          "name": "b",
+          "stock": 0
+        },
+        {
+          "name": "c",
+          "stock": 1
+        }
+      ]
+    }
+  }
+]

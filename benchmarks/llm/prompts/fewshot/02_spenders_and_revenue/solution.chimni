@@ -1,0 +1,4 @@
+-- two independent belts, two outputs: the ranked customers and the grand total
+$[orders,min_total]{(customer,total),revenue}
+@orders  #(customer)  +s(amount)  ?>[min_total]  ~\(total)  ^
+@orders  .            +s(amount)  .              .          ^

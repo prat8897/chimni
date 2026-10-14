@@ -1,0 +1,6 @@
+{
+  "inputs": [
+    "orders",
+    "min_total"
+  ]
+}

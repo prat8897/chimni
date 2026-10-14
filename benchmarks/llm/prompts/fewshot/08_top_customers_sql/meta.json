@@ -1,0 +1,20 @@
+{
+  "inputs": [
+    "customers",
+    "orders"
+  ],
+  "sql": {
+    "tables": {
+      "customers": [
+        "id",
+        "name"
+      ],
+      "orders": [
+        "id",
+        "cid",
+        "amount"
+      ]
+    },
+    "output": "rows"
+  }
+}

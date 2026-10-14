@@ -1,0 +1,3 @@
+-- customers whose total spend exceeds min_total, biggest first
+$[orders,min_total]{(customer,total)}
+@orders  #(customer)  +s(amount)  ?>[min_total]  ~\(total)  ^

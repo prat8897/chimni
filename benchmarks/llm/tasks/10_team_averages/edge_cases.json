@@ -1,0 +1,30 @@
+[
+  {
+    "name": "empty",
+    "input": {
+      "players": []
+    }
+  },
+  {
+    "name": "order of first appearance",
+    "input": {
+      "players": [
+        {
+          "name": "a",
+          "team": "blue",
+          "score": 3
+        },
+        {
+          "name": "b",
+          "team": "red",
+          "score": 4
+        },
+        {
+          "name": "c",
+          "team": "blue",
+          "score": 4
+        }
+      ]
+    }
+  }
+]

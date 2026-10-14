@@ -1,0 +1,34 @@
+[
+  {
+    "name": "empty",
+    "input": {
+      "reviews": []
+    }
+  },
+  {
+    "name": "single",
+    "input": {
+      "reviews": [
+        {
+          "user": "a",
+          "stars": 4
+        }
+      ]
+    }
+  },
+  {
+    "name": "non-integer mean",
+    "input": {
+      "reviews": [
+        {
+          "user": "a",
+          "stars": 4
+        },
+        {
+          "user": "b",
+          "stars": 5
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "title": "First n sign-ups",
+  "difficulty": "easy",
+  "features": [
+    "take n",
+    "pick"
+  ],
+  "expressible": true,
+  "inputs": [
+    "users",
+    "n"
+  ],
+  "conditions": [
+    "python",
+    "chimni",
+    "pandas",
+    "sql"
+  ],
+  "sql": {
+    "tables": {
+      "users": [
+        "name",
+        "joined"
+      ]
+    },
+    "output": "column"
+  }
+}

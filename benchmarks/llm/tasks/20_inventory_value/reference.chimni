@@ -1,0 +1,4 @@
+$[items]{value}
+@items  *(price)
+@items  *(qty)
+.       ''*'      +s  ^

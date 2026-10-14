@@ -1,0 +1,22 @@
+[
+  {
+    "name": "empty",
+    "input": {
+      "scores": [],
+      "a_cut": 90,
+      "b_cut": 70
+    }
+  },
+  {
+    "name": "exactly on the cut-offs",
+    "input": {
+      "scores": [
+        90,
+        70,
+        69
+      ],
+      "a_cut": 90,
+      "b_cut": 70
+    }
+  }
+]

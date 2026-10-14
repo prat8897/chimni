@@ -1,0 +1,14 @@
+{
+  "inputs": [
+    "users"
+  ],
+  "sql": {
+    "tables": {
+      "users": [
+        "name",
+        "age"
+      ]
+    },
+    "output": "scalar"
+  }
+}

@@ -1,0 +1,2 @@
+$[scores]{(grade,count)}
+@scores  ?>=[90:A, 75:B, _:C]  #()  +n  ^

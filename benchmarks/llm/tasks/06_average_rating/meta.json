@@ -1,0 +1,27 @@
+{
+  "title": "Average rating",
+  "difficulty": "easy",
+  "features": [
+    "average",
+    "none"
+  ],
+  "expressible": true,
+  "inputs": [
+    "reviews"
+  ],
+  "conditions": [
+    "python",
+    "chimni",
+    "pandas",
+    "sql"
+  ],
+  "sql": {
+    "tables": {
+      "reviews": [
+        "user",
+        "stars"
+      ]
+    },
+    "output": "scalar"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "title": "Revenue per unit, by category",
+  "difficulty": "hard",
+  "features": [
+    "group",
+    "two grouped rows",
+    "positional division"
+  ],
+  "expressible": true,
+  "inputs": [
+    "sales"
+  ],
+  "conditions": [
+    "python",
+    "chimni",
+    "pandas",
+    "sql"
+  ],
+  "sql": {
+    "tables": {
+      "sales": [
+        "category",
+        "revenue",
+        "units"
+      ]
+    },
+    "output": "rows"
+  }
+}

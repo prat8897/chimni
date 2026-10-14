@@ -1,0 +1,28 @@
+[
+  {
+    "name": "empty",
+    "input": {
+      "tags": []
+    }
+  },
+  {
+    "name": "case duplicates",
+    "input": {
+      "tags": [
+        "News",
+        "news",
+        "NEWS"
+      ]
+    }
+  },
+  {
+    "name": "unsorted",
+    "input": {
+      "tags": [
+        "tech",
+        "Art",
+        "food"
+      ]
+    }
+  }
+]

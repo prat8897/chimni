@@ -1,0 +1,2 @@
+$[scores,a_cut,b_cut]{grades}
+@scores  ?>=[a_cut:A, b_cut:B, _:F]  ^

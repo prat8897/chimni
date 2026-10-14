@@ -1,0 +1,4 @@
+$[orders]{share|none}
+@orders  #(customer)  +s(amount)  +m(total)
+@orders  .            +s(amount)  .
+.        .            .           ''/'       *(total)  ^

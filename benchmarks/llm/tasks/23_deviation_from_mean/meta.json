@@ -1,0 +1,25 @@
+{
+  "title": "Deviation from the mean",
+  "difficulty": "hard",
+  "features": [
+    "average",
+    "tie broadcast",
+    "subtraction"
+  ],
+  "expressible": true,
+  "inputs": [
+    "measurements"
+  ],
+  "conditions": [
+    "python",
+    "chimni",
+    "pandas",
+    "sql"
+  ],
+  "sql": {
+    "tables": {
+      "measurements": "value"
+    },
+    "output": "column"
+  }
+}

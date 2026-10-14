@@ -1,0 +1,30 @@
+{
+  "title": "Busy days",
+  "difficulty": "medium",
+  "features": [
+    "group",
+    "count",
+    "filter on aggregate",
+    "pick"
+  ],
+  "expressible": true,
+  "inputs": [
+    "events",
+    "k"
+  ],
+  "conditions": [
+    "python",
+    "chimni",
+    "pandas",
+    "sql"
+  ],
+  "sql": {
+    "tables": {
+      "events": [
+        "day",
+        "kind"
+      ]
+    },
+    "output": "column"
+  }
+}

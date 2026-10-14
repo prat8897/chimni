@@ -1,0 +1,12 @@
+{
+  "inputs": [
+    "expenses",
+    "budget"
+  ],
+  "sql": {
+    "tables": {
+      "expenses": "value"
+    },
+    "output": "scalar"
+  }
+}

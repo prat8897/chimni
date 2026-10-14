@@ -1,0 +1,2 @@
+$[customers,orders,min_total]{names}
+@customers  @orders(customer_id=id)  #(name)  +s(amount)  ?>=[min_total]  *(name)  ~/  ^

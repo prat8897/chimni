@@ -1,0 +1,30 @@
+{
+  "title": "Top customer's share of revenue",
+  "difficulty": "hard",
+  "features": [
+    "group",
+    "sum",
+    "max item",
+    "three-row tie",
+    "none"
+  ],
+  "expressible": true,
+  "inputs": [
+    "orders"
+  ],
+  "conditions": [
+    "python",
+    "chimni",
+    "pandas",
+    "sql"
+  ],
+  "sql": {
+    "tables": {
+      "orders": [
+        "customer",
+        "amount"
+      ]
+    },
+    "output": "scalar"
+  }
+}

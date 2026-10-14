@@ -1,0 +1,1 @@
+SELECT DISTINCT LOWER(value) AS t FROM tags ORDER BY t;

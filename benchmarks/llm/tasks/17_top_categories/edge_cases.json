@@ -1,0 +1,34 @@
+[
+  {
+    "name": "n is zero",
+    "input": {
+      "items": [
+        {
+          "name": "a",
+          "category": "toys"
+        }
+      ],
+      "n": 0
+    }
+  },
+  {
+    "name": "tie at the cut",
+    "input": {
+      "items": [
+        {
+          "name": "a",
+          "category": "food"
+        },
+        {
+          "name": "b",
+          "category": "toys"
+        },
+        {
+          "name": "c",
+          "category": "books"
+        }
+      ],
+      "n": 2
+    }
+  }
+]

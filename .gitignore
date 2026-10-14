@@ -11,3 +11,5 @@ venv/
 .idea/
 .vscode/
 _site/
+benchmarks/llm/cache/
+benchmarks/llm/results/dryrun/

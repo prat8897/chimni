@@ -1,0 +1,15 @@
+{
+  "inputs": [
+    "orders",
+    "min_total"
+  ],
+  "sql": {
+    "tables": {
+      "orders": [
+        "customer",
+        "amount"
+      ]
+    },
+    "output": "rows"
+  }
+}

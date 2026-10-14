@@ -1,0 +1,4 @@
+$[sales]{(category,per_unit)}
+@sales  #(category)  +s(revenue)
+@sales  #(category)  +s(units)
+.       .            ''/'          ^

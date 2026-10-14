@@ -1,0 +1,28 @@
+{
+  "title": "Cheapest product",
+  "difficulty": "easy",
+  "features": [
+    "min item",
+    "pick",
+    "none"
+  ],
+  "expressible": true,
+  "inputs": [
+    "products"
+  ],
+  "conditions": [
+    "python",
+    "chimni",
+    "pandas",
+    "sql"
+  ],
+  "sql": {
+    "tables": {
+      "products": [
+        "name",
+        "price"
+      ]
+    },
+    "output": "scalar"
+  }
+}

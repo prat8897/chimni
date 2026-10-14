@@ -1,0 +1,2 @@
+$[players]{(name,score)}
+@players  ~/(name)  ~\(score)  *(name,score)  ^

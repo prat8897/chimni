@@ -1,0 +1,29 @@
+[
+  {
+    "name": "empty",
+    "input": {
+      "events": [],
+      "k": 0
+    }
+  },
+  {
+    "name": "exactly k is not enough",
+    "input": {
+      "events": [
+        {
+          "day": "mon",
+          "kind": "call"
+        },
+        {
+          "day": "mon",
+          "kind": "call"
+        },
+        {
+          "day": "tue",
+          "kind": "call"
+        }
+      ],
+      "k": 1
+    }
+  }
+]

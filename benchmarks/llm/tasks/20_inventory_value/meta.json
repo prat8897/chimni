@@ -1,0 +1,29 @@
+{
+  "title": "Inventory value",
+  "difficulty": "hard",
+  "features": [
+    "pick",
+    "positional stream arithmetic",
+    "sum"
+  ],
+  "expressible": true,
+  "inputs": [
+    "items"
+  ],
+  "conditions": [
+    "python",
+    "chimni",
+    "pandas",
+    "sql"
+  ],
+  "sql": {
+    "tables": {
+      "items": [
+        "name",
+        "price",
+        "qty"
+      ]
+    },
+    "output": "scalar"
+  }
+}

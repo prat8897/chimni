@@ -21,6 +21,7 @@
     <a href="#play">Playground</a>
     <a href="#learn">Learn</a>
     <a href="#compare">Compare</a>
+    <a href="#findings">Findings</a>
     <a class="gh" href="https://github.com/prat8897/chimni">GitHub ★</a>
   </nav>
 </header>
@@ -196,6 +197,105 @@
         <a href="https://github.com/prat8897/chimni/blob/main/CONTRIBUTING.md">Help measure it.</a></p>
     </article>
   </div>
+</section>
+
+<section id="findings" class="findings">
+  <h2>What we've found so far</h2>
+  <p class="sub">We're building a pre-registered benchmark to answer the question Chimni was designed around:
+    <b>can a model write correct Chimni from a plain-English spec as reliably as Python, pandas or SQL, and at what
+    token cost?</b> The hypotheses, 30 tasks and scoring rules were written down and frozen before any model saw a task.
+    No model results yet. Below is what building it turned up, including the parts that don't flatter Chimni.</p>
+
+  <div class="finding-grid">
+    <article class="finding bad">
+      <span class="tag">language hazard</span>
+      <h3>Tying two grouped rows pairs groups by position, not by key</h3>
+      <p><code>''/'</code> on two lists of groups divides item <i>i</i> by item <i>i</i>. It checks the lengths match,
+        not the keys. If the two rows' groups come out in a different order, the answer is wrong and nothing
+        complains. Here the right answer is <code>a → 1.0, b → 100.0</code>.</p>
+      <pre>$[sales,returns]{(category,ratio)}
+@sales    #(category)  +s(revenue)
+@returns  #(category)  +s(units)
+.         .            &#x27;&#x27;/&#x27;          ^</pre>
+      <button class="btn small try" type="button" data-program="$[sales,returns]{(category,ratio)}
+@sales    #(category)  +s(revenue)
+@returns  #(category)  +s(units)
+.         .            &#x27;&#x27;/&#x27;          ^
+" data-inputs="{
+  &quot;sales&quot;: [
+    {
+      &quot;category&quot;: &quot;a&quot;,
+      &quot;revenue&quot;: 10
+    },
+    {
+      &quot;category&quot;: &quot;b&quot;,
+      &quot;revenue&quot;: 100
+    }
+  ],
+  &quot;returns&quot;: [
+    {
+      &quot;category&quot;: &quot;b&quot;,
+      &quot;units&quot;: 1
+    },
+    {
+      &quot;category&quot;: &quot;a&quot;,
+      &quot;units&quot;: 10
+    }
+  ]
+}">Run it in the playground ▸</button>
+    </article>
+
+    <article class="finding">
+      <span class="tag">more expressive than expected</span>
+      <h3>Ties can do more than the docs suggest, but it's hard to read</h3>
+      <p>We filed "second-highest distinct score" as impossible in Chimni. It isn't: four rows and three ties do it.
+        It stays in the benchmark as a hard task. Whether a model can find tricks like this is part of what we're
+        measuring.</p>
+      <pre>-- second-highest distinct score: subtract the max, keep the negatives,
+-- take their max, add the max back
+$[scores]{second|none}
+@scores  .     .      .
+@scores  +m    .      .
+.        &#x27;&#x27;-&#x27;  ?&lt;[0]  +m
+.        .     .      &#x27;+&#x27;&#x27;  ^</pre>
+      <button class="btn small try" type="button" data-program="-- second-highest distinct score: subtract the max, keep the negatives,
+-- take their max, add the max back
+$[scores]{second|none}
+@scores  .     .      .
+@scores  +m    .      .
+.        &#x27;&#x27;-&#x27;  ?&lt;[0]  +m
+.        .     .      &#x27;+&#x27;&#x27;  ^
+" data-inputs="{
+  &quot;scores&quot;: [
+    9,
+    3,
+    9,
+    7
+  ]
+}">Run it in the playground ▸</button>
+    </article>
+
+    <article class="finding">
+      <span class="tag">cost</span>
+      <h3>Teaching Chimni makes the prompt 2.5× longer</h3>
+      <p>A model already knows Python; it has to be taught Chimni. With the same conventions and ten worked examples,
+        the system prompt is <b>~4.7k tokens for Chimni</b> against ~1.9k for Python, ~2.0k for pandas and ~1.6k for
+        SQL. Shorter programs have to make up for that before Chimni is cheaper overall, and our pre-registered
+        prediction is that they won't.</p>
+    </article>
+
+    <article class="finding">
+      <span class="tag">by design</span>
+      <h3>Four everyday tasks Chimni can't express</h3>
+      <p>An <b>OR</b> filter, an <b>anti-join</b> ("customers with no orders"), a <b>median</b>, and
+        <b>day-to-day differences</b>. There's no OR, the only join is an inner join, and nothing can address an item by
+        its position. The benchmark reports these separately instead of hiding them.</p>
+    </article>
+  </div>
+
+  <p class="more">Details: <a href="https://github.com/prat8897/chimni/blob/main/benchmarks/llm/FINDINGS.md">FINDINGS.md</a> ·
+    Hypotheses and method: <a href="https://github.com/prat8897/chimni/blob/main/benchmarks/llm/PREREGISTRATION.md">PREREGISTRATION.md</a> ·
+    Run it yourself: <a href="https://github.com/prat8897/chimni/tree/main/benchmarks/llm">benchmarks/llm</a></p>
 </section>
 
 </main>

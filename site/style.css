@@ -249,11 +249,21 @@ tbody tr:last-child td { border-bottom: 0; }
 .footer p { margin: 4px 0; }
 .footer .small { font-size: 13px; }
 
+/* ----------------------------------------------------------- findings */
+.finding-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 28px; }
+.finding { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; min-width: 0; }
+.finding.bad { border-color: rgba(255,107,107,.45); }
+.finding .tag { display: inline-block; font: 600 11px var(--mono); text-transform: uppercase; letter-spacing: .08em;
+  color: var(--teal); border: 1px solid var(--line-2); border-radius: 999px; padding: 2px 9px; margin-bottom: 10px; }
+.finding.bad .tag { color: var(--red); border-color: rgba(255,107,107,.45); }
+.finding p { color: #c4c9e0; margin: 8px 0 14px; font-size: 15px; }
+.finding pre { margin: 0 0 14px; background: var(--bg-2); border-radius: 8px; padding: 10px 12px; font-size: 12.5px; overflow-x: auto; }
+
 /* -------------------------------------------------------------- small */
 @media (max-width: 900px) {
   .panes { grid-template-columns: minmax(0, 1fr); }
   .pane-left { border-right: 0; border-bottom: 1px solid var(--line); }
-  .rules, .takeaways { grid-template-columns: minmax(0, 1fr); }
+  .rules, .takeaways, .finding-grid { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 560px) {
   .nav { gap: 12px; }

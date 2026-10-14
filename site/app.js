@@ -298,6 +298,12 @@ async function main() {
   els.run.addEventListener("click", runNow);
   els.share.addEventListener("click", share);
   window.addEventListener("hashchange", fromHash);
+  document.querySelectorAll("button.try").forEach((b) => b.addEventListener("click", () => {
+    els.program.value = b.dataset.program;
+    els.inputs.value = b.dataset.inputs;
+    runNow();
+    $("#play").scrollIntoView();
+  }));
 
   for (const ta of [els.program, els.inputs]) {
     ta.addEventListener("keydown", (ev) => {

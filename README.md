@@ -7,9 +7,12 @@
   <img alt="Python 3.9+" src="https://img.shields.io/badge/python-3.9%2B-3ddbd9?style=flat-square">
   <img alt="Zero dependencies" src="https://img.shields.io/badge/dependencies-0-6ee7a0?style=flat-square">
   <img alt="Status: alpha" src="https://img.shields.io/badge/status-v0.1%20alpha-ffd166?style=flat-square">
+  <a href="https://prat8897.github.io/chimni/"><img alt="Try it in your browser" src="https://img.shields.io/badge/playground-try%20it%20in%20your%20browser-ff8a3d?style=flat-square"></a>
 </p>
 
 <h3 align="center">Most languages tell the machine <em>how</em>.<br>Chimni says <em>what flows where</em> — and the layout carries the rest.</h3>
+
+<p align="center"><b><a href="https://prat8897.github.io/chimni/">▶ Try it in your browser</a></b> — no install; the real interpreter runs on Pyodide.</p>
 
 ---
 
@@ -55,6 +58,9 @@ Take `orders` → group by customer → sum `amount` → keep totals above `min_
 Chimni is **a real, runnable language** — a plain deterministic interpreter, no model in the loop — and every example in this repo is tested against its Python original on random inputs.
 
 ## Try it
+
+The fastest way is the **[playground](https://prat8897.github.io/chimni/)**: pick an example, edit it, and watch every
+cell's output update as you type. To run it locally:
 
 ```bash
 git clone https://github.com/prat8897/chimni.git && cd chimni
@@ -121,29 +127,45 @@ Full reference: [docs/SPEC.md](docs/SPEC.md) · Learn it in ten minutes: [docs/T
 
 ## Examples
 
-Ten programs, each next to the Python it replaces, each checked against it on 300 random inputs
-(and the SQL one against real SQL, run by `sqlite3`).
+Ten programs, each in three versions: plain Python, the **idiomatic pandas, SQL or jq** someone fluent would write,
+and Chimni. All three are run against each other on hundreds of random inputs in CI, so they really compute the same
+thing. Each one opens in the [playground](https://prat8897.github.io/chimni/).
 
-| Example | What it does | Python | Chimni |
-|---|---|---|---|
-| [`01_big_spenders`](examples/01_big_spenders.chimni) | customers over a spend threshold, biggest first | [py](examples/python/01_big_spenders.py) | 2 lines |
-| [`02_spenders_and_revenue`](examples/02_spenders_and_revenue.chimni) | …plus total revenue, as a second independent row | [py](examples/python/02_spenders_and_revenue.py) | 3 lines |
-| [`03_first_big_new_transaction`](examples/03_first_big_new_transaction.chimni) | dedupe by id, first one over a limit | [py](examples/python/03_first_big_new_transaction.py) | 2 lines |
-| [`04_adult_names`](examples/04_adult_names.chimni) | filter, pick, sort | [py](examples/python/04_adult_names.py) | 2 lines |
-| [`05_top_words`](examples/05_top_words.chimni) | word frequencies, top *n* | [py](examples/python/05_top_words.py) | 2 lines |
-| [`06_category_share`](examples/06_category_share.chimni) | each category's share of the total (a positional join) | [py](examples/python/06_category_share.py) | 4 lines |
-| [`07_oldest_user`](examples/07_oldest_user.chimni) | argmax, with a clean "none" for empty input | [py](examples/python/07_oldest_user.py) | 2 lines |
-| [`08_top_customers_sql`](examples/08_top_customers_sql.chimni) | a `JOIN … GROUP BY … ORDER BY … LIMIT` | [py](examples/python/08_top_customers_sql.py) | 2 lines |
-| [`09_first_overspend`](examples/09_first_overspend.chimni) | running total, first index over budget | [py](examples/python/09_first_overspend.py) | 2 lines |
-| [`10_grade`](examples/10_grade.chimni) | an `if / elif / else` ladder | [py](examples/python/10_grade.py) | 2 lines |
+| Example | What it does | Python | pandas / SQL / jq | Chimni |
+|---|---|---|---|---|
+| [`01_big_spenders`](examples/01_big_spenders.chimni) | customers over a spend threshold, biggest first | [8 lines](examples/python/01_big_spenders.py) | [pandas · 6 lines](examples/compare/01_big_spenders.py) | 2 lines |
+| [`02_spenders_and_revenue`](examples/02_spenders_and_revenue.chimni) | …plus total revenue, as a second independent row | [9 lines](examples/python/02_spenders_and_revenue.py) | [SQL · 6 lines](examples/compare/02_spenders_and_revenue.sql) | 3 lines |
+| [`03_first_big_new_transaction`](examples/03_first_big_new_transaction.chimni) | dedupe by id, first one over a limit | [9 lines](examples/python/03_first_big_new_transaction.py) | [pandas · 5 lines](examples/compare/03_first_big_new_transaction.py) | 2 lines |
+| [`04_adult_names`](examples/04_adult_names.chimni) | filter, pick, sort | [3 lines](examples/python/04_adult_names.py) | [jq · 1 line](examples/compare/04_adult_names.jq) | 2 lines |
+| [`05_top_words`](examples/05_top_words.chimni) | word frequencies, top *n* | [5 lines](examples/python/05_top_words.py) | [pandas · 4 lines](examples/compare/05_top_words.py) | 2 lines |
+| [`06_category_share`](examples/06_category_share.chimni) | each category's share of the total (a positional join) | [6 lines](examples/python/06_category_share.py) | [SQL · 4 lines](examples/compare/06_category_share.sql) | 4 lines |
+| [`07_oldest_user`](examples/07_oldest_user.chimni) | argmax, with a clean "none" for empty input | [4 lines](examples/python/07_oldest_user.py) | [SQL · 1 line](examples/compare/07_oldest_user.sql) | 2 lines |
+| [`08_top_customers_sql`](examples/08_top_customers_sql.chimni) | a `JOIN … GROUP BY … ORDER BY … LIMIT` | [9 lines](examples/python/08_top_customers_sql.py) | [SQL · 5 lines](examples/compare/08_top_customers_sql.sql) | 2 lines |
+| [`09_first_overspend`](examples/09_first_overspend.chimni) | running total, first index over budget | [7 lines](examples/python/09_first_overspend.py) | [jq · 3 lines](examples/compare/09_first_overspend.jq) | 2 lines |
+| [`10_grade`](examples/10_grade.chimni) | an `if / elif / else` ladder | [7 lines](examples/python/10_grade.py) | [jq · 1 line](examples/compare/10_grade.jq) | 2 lines |
 
-Across these ten, the code goes from **67 lines / 2,301 characters** of Python to **23 lines / 716 characters** of Chimni
-(comments and blank lines excluded; whitespace squeezed — see [`benchmarks/size.py`](benchmarks/size.py)).
-Chimni's line count includes the signature line.
+### The fair comparison
 
-> **Honest caveat:** characters are not tokens. Whether Chimni is actually cheaper for an LLM to read and write is an
-> open question we haven't measured yet — [that's a great first contribution](CONTRIBUTING.md#good-first-contributions).
-> `benchmarks/size.py` adds token columns automatically if `tiktoken` is installed.
+Comparing Chimni with loop-and-dict Python flatters it, so here are the numbers against the tools built for the job
+(comments and blank lines excluded; characters counted with whitespace squeezed; tokens are `cl100k_base`;
+Chimni's line count includes its signature):
+
+|  | Python | pandas / SQL / jq | Chimni |
+|---|---:|---:|---:|
+| lines | 67 | 36 | 23 |
+| characters | 1,973 | 1,435 | 716 |
+| tokens | 623 | 412 | 317 |
+
+- **Most of Chimni's lead over Python disappears against the right tool.** SQL and jq are about as short as Chimni,
+  and on `02`, `04`, `06` and `07` they use fewer tokens. `SELECT name FROM users ORDER BY age DESC LIMIT 1` is hard to beat.
+- **pandas barely helps at this size.** It saves a few lines, but in characters and tokens it's roughly even with plain
+  Python (and longer on `03`): building a DataFrame costs about what the loop saved.
+- **Where Chimni differs is not length.** Output shape is part of the grammar, independent rows are visibly
+  independent, and ties are deterministic. The SQL versions need an explicit `ORDER BY …, MIN(rowid)` to agree with
+  the others when totals are equal; Chimni and Python keep first-seen order for free.
+
+Reproduce with `python benchmarks/size.py` (`pip install tiktoken` for the token columns).
+Whether models actually *write* Chimni more reliably than these is untested — [help measure it](CONTRIBUTING.md#good-first-contributions).
 
 ## Mistakes are caught at the grammar level
 
@@ -180,7 +202,7 @@ Read the longer story, including what didn't work, in [docs/DESIGN.md](docs/DESI
 
 Chimni is **v0.1, alpha**. It's a working interpreter for the dataflow core. It is *not* yet a general-purpose language.
 
-**Works:** the ten examples above · static grid checks · output-shape checks · `--trace` · Python API · zero dependencies.
+**Works:** the ten examples above · static grid checks · output-shape checks · `--trace` · Python API · zero dependencies · [in-browser playground](https://prat8897.github.io/chimni/).
 
 **Not yet:** side effects (writing to a DB, sending a message) · calling one Chimni program from another ·
 user-defined cells · lazy streams (early exit currently computes everything, then stops) · nested data deeper than one
@@ -188,7 +210,7 @@ level · static shape inference (output shapes are checked when a row emits, not
 
 ## Roadmap
 
-- [ ] Measure token cost of Chimni vs Python/SQL with a real tokenizer
+- [x] Measure token cost against Python and idiomatic pandas/SQL/jq (`cl100k_base`; other tokenizers welcome)
 - [ ] `chimni translate`: Python/SQL/English → Chimni with an LLM, verified by differential testing
 - [ ] A translation benchmark: can models write correct Chimni from a spec?
 - [ ] Side effects with explicit ordering
@@ -196,7 +218,7 @@ level · static shape inference (output shapes are checked when a row emits, not
 - [ ] Lazy streams, so `^[1]` really stops early
 - [ ] Static shape inference
 - [ ] `chimni fmt` (column aligner) and editor syntax highlighting
-- [ ] In-browser playground (Pyodide)
+- [x] [In-browser playground](https://prat8897.github.io/chimni/) (Pyodide)
 - [ ] Backends: compile rows to SQL / pandas
 
 ## Prior art and influences

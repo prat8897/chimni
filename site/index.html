@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chimni — layout is grammar</title>
+<meta name="description" content="Chimni is a 2D dataflow language where position is grammar. Try it in your browser: no install, the real interpreter runs on Pyodide.">
+<meta property="og:title" content="Chimni — a 2D dataflow language where layout is grammar">
+<meta property="og:description" content="Right means 'consume the cell on my left'. A new row is an independent chain. Try it in your browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b1020'/%3E%3Cpath d='M8 11h10M8 21h16' stroke='%23ff8a3d' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='23' cy='11' r='3' fill='%23ffd166'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="#top"><span class="brand-word">chimni</span><span class="brand-tag">v0.1 alpha</span></a>
+  <nav>
+    <a href="#play">Playground</a>
+    <a href="#learn">Learn</a>
+    <a href="#compare">Compare</a>
+    <a class="gh" href="https://github.com/prat8897/chimni">GitHub ★</a>
+  </nav>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <p class="eyebrow">A 2D dataflow language</p>
+  <h1>Layout is <span class="grad">grammar</span>.</h1>
+  <p class="lede">Most languages tell the machine <em>how</em>. Chimni says <em>what flows where</em>.
+    A cell consumes the cell on its left. A new row is an independent chain. Inputs and outputs live in the syntax.
+    There are no loops and no temporary variables.</p>
+  <div class="hero-code" aria-label="A Chimni program and how to read it">
+    <pre><span class="t-sig">$[orders,min_total]{(customer,total)}</span>
+<span class="t-src">@orders</span>  <span class="t-grp">#</span><span class="t-fld">(customer)</span>  <span class="t-agg">+s</span><span class="t-fld">(amount)</span>  <span class="t-flt">?&gt;</span><span class="t-par">[min_total]</span>  <span class="t-srt">~\</span><span class="t-fld">(total)</span>  <span class="t-emit">^</span></pre>
+    <p>take <b>orders</b> → group by customer → sum amount → keep totals above <b>min_total</b> → sort descending → emit</p>
+  </div>
+  <div class="cta">
+    <a class="btn primary" href="#play">Try it — no install</a>
+    <a class="btn" href="#learn">Learn it in 2 minutes</a>
+  </div>
+</section>
+
+<section id="play" class="play">
+  <div class="play-head">
+    <h2>Playground</h2>
+    <p class="sub">The real interpreter, compiled to WebAssembly with <a href="https://pyodide.org">Pyodide</a>. Edit anything — it re-runs as you type.</p>
+  </div>
+
+  <div class="toolbar">
+    <label class="pick">
+      <span>Example</span>
+      <select id="example"></select>
+    </label>
+    <span id="status" class="status loading"><i></i><span>Loading Python…</span></span>
+    <span class="spacer"></span>
+    <button id="share" class="btn small" type="button">Copy link</button>
+    <button id="run" class="btn small primary" type="button" title="Ctrl/⌘ + Enter">Run ▸</button>
+  </div>
+
+  <div class="panes">
+    <div class="pane-left">
+      <div class="field">
+        <div class="field-label"><span>Program</span><span class="hint">.chimni</span></div>
+        <div class="editor" id="prog-editor">
+          <pre class="hl" aria-hidden="true"><code id="prog-hl"></code></pre>
+          <textarea id="program" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Chimni program"></textarea>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span>Inputs</span><span class="hint">JSON object</span></div>
+        <div class="editor">
+          <textarea id="inputs" class="plain" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Inputs as JSON"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="pane-right">
+      <div class="result" id="result" aria-live="polite">
+        <div class="field-label"><span>Result</span><span class="hint" id="result-hint"></span></div>
+        <pre id="result-text"></pre>
+      </div>
+      <div class="cmp-head field-label"><span>The same program in Python and <span id="alt-lang">pandas</span></span><span class="hint">tested equal in CI</span></div>
+      <div id="compare-body"></div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="field-label"><span>Dataflow</span><span class="hint">every cell and the value it produced · data moves → along a row · <code>'</code> reads the cell above</span></div>
+    <div id="grid" class="grid"></div>
+  </div>
+</section>
+
+<section id="learn" class="learn">
+  <h2>Read it in two minutes</h2>
+  <p class="sub">In Sanskrit, a word's ending tells you its role in the sentence. Chimni borrows that idea: <b>position is grammar</b>.</p>
+
+  <div class="rules">
+    <article class="rule">
+      <div class="glyph">→</div>
+      <h3>Right means “consume the cell on my left”</h3>
+      <p>Each cell takes the previous cell's output. A row is a pipeline, read left to right.</p>
+      <pre><span class="t-src">@users</span>  <span class="t-flt">?</span><span class="t-fld">(age)</span><span class="t-flt">&gt;=</span><span class="t-par">[18]</span>  <span class="t-pick">*</span><span class="t-fld">(name)</span>  <span class="t-srt">~/</span>  <span class="t-emit">^</span></pre>
+    </article>
+    <article class="rule">
+      <div class="glyph">↓</div>
+      <h3>A new row is an independent chain</h3>
+      <p>Rows can't see each other unless they say so, so a runtime may run them in parallel. Each <code>^</code> fills the next output.</p>
+      <pre><span class="t-src">@orders</span>  <span class="t-grp">#</span><span class="t-fld">(customer)</span>  <span class="t-agg">+s</span><span class="t-fld">(amount)</span>  <span class="t-emit">^</span>
+<span class="t-src">@orders</span>  <span class="t-dot">.</span>            <span class="t-agg">+s</span><span class="t-fld">(amount)</span>  <span class="t-emit">^</span></pre>
+    </article>
+    <article class="rule">
+      <div class="glyph">'</div>
+      <h3>A quote reads the cell above</h3>
+      <p><code>'</code> is one row up, <code>''</code> two rows up, same column. Joins happen by position, not by name.</p>
+      <pre><span class="t-src">@sales</span>  <span class="t-grp">#</span><span class="t-fld">(cat)</span>  <span class="t-agg">+s</span><span class="t-fld">(amount)</span>
+<span class="t-src">@sales</span>  <span class="t-dot">.</span>       <span class="t-agg">+s</span><span class="t-fld">(amount)</span>
+<span class="t-dot">.</span>       <span class="t-dot">.</span>       <span class="t-tie">''/'</span>        <span class="t-emit">^</span></pre>
+    </article>
+    <article class="rule">
+      <div class="glyph">$</div>
+      <h3>Signatures are contracts</h3>
+      <p>Inputs in <code>[ ]</code>, output shapes in <code>{ }</code>. Emit the wrong shape, or <code>none</code> where it isn't allowed, and it's an error.</p>
+      <pre><span class="t-sig">$[transactions,limit]{id|none}</span></pre>
+    </article>
+  </div>
+
+  <figure class="diagram">
+    <img src="assets/how-to-read.svg" alt="Diagram: right means depends on, down means independent, a quote reads the cell above">
+  </figure>
+
+  <h3 class="table-title">Every cell, on one screen</h3>
+  <div class="table-wrap">
+  <table class="cheat">
+    <thead><tr><th>Cell</th><th>Meaning</th><th>Python-ish</th></tr></thead>
+    <tbody>
+      <tr><td><code>$[in]{out}</code></td><td>signature: inputs, and the shape of each output</td><td><code>def f(in) -&gt; out</code></td></tr>
+      <tr><td><code>@x</code></td><td>start a row from input <code>x</code></td><td><code>for _ in x</code></td></tr>
+      <tr><td><code>@x(a=b)</code></td><td>join input <code>x</code> where <code>x.a == item.b</code></td><td><code>JOIN … ON</code></td></tr>
+      <tr><td><code>#(k)</code> <code>#()</code></td><td>group by field / by the item</td><td><code>groupby</code></td></tr>
+      <tr><td><code>%(k)</code></td><td>keep the first item per key</td><td><code>seen = set()</code> loop</td></tr>
+      <tr><td><code>?(f)&gt;[v]</code></td><td>filter (<code>&gt; &lt; &gt;= &lt;= = !=</code>)</td><td><code>WHERE</code></td></tr>
+      <tr><td><code>?&gt;=[90:A, 75:B, _:C]</code></td><td>ladder, first match wins</td><td><code>if / elif / else</code></td></tr>
+      <tr><td><code>*(f)</code> <code>*(a,b)</code></td><td>pick field(s)</td><td><code>x["f"]</code></td></tr>
+      <tr><td><code>+s +n +a +m +i</code></td><td>sum / count / average / max item / min item</td><td><code>sum len mean max min</code></td></tr>
+      <tr><td><code>+r</code></td><td>running total</td><td><code>accumulate</code></td></tr>
+      <tr><td><code>~/</code> <code>~\</code></td><td>sort ascending / descending</td><td><code>sorted</code></td></tr>
+      <tr><td><code>_l</code> <code>_u</code> <code>;w</code></td><td>lowercase / uppercase / split into words</td><td><code>.lower() .upper() .split()</code></td></tr>
+      <tr><td><code>^</code> <code>^[n]</code> <code>^[1](f)</code></td><td>emit: all / first <i>n</i> / first one, then a field</td><td><code>return</code>, <code>[:n]</code></td></tr>
+      <tr><td><code>.</code></td><td>empty cell (passes data through)</td><td>—</td></tr>
+      <tr><td><code>'</code> <code>''</code> <code>''/'</code></td><td>tie: read the cell 1 / 2 rows up; arithmetic on ties</td><td>—</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="more">Full reference: <a href="https://github.com/prat8897/chimni/blob/main/docs/SPEC.md">SPEC.md</a> ·
+    Ten-minute tutorial: <a href="https://github.com/prat8897/chimni/blob/main/docs/TUTORIAL.md">TUTORIAL.md</a> ·
+    What didn't work: <a href="https://github.com/prat8897/chimni/blob/main/docs/DESIGN.md">DESIGN.md</a></p>
+</section>
+
+<section id="compare" class="compare">
+  <h2>The fair comparison</h2>
+  <p class="sub">Comparing Chimni with loop-and-dict Python flatters it. So every example also has an idiomatic
+    <b>pandas</b>, <b>SQL</b> or <b>jq</b> version, written the way someone fluent would write it.
+    All three versions are run against each other on hundreds of random inputs in CI, so they really do compute the same thing.</p>
+
+  <div class="table-wrap">
+    <table class="cmp" id="cmp-table">
+      <thead>
+        <tr><th>Example</th><th class="num">Python</th><th>Alternative</th><th class="num">Alt</th><th class="num">Chimni</th><th class="bars">Tokens <span class="key"><i class="k-py"></i>py <i class="k-alt"></i>alt <i class="k-ch"></i>chimni</span></th></tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot></tfoot>
+    </table>
+  </div>
+  <p class="foot" id="cmp-foot">Lines of code, comments excluded. Click a row to open it in the playground.</p>
+
+  <div class="takeaways">
+    <article>
+      <h3>Where the others win</h3>
+      <p>jq and SQL are as short as Chimni, sometimes shorter. <code>SELECT name FROM users ORDER BY age DESC LIMIT 1</code> is
+        hard to beat. Most of Chimni's lead over Python disappears once you compare it with a tool built for the job.</p>
+    </article>
+    <article>
+      <h3>Where Chimni is different</h3>
+      <p>The output shape is part of the grammar, so “I said pairs but built a triple” fails with a row and column.
+        Independent rows are visibly independent. Ties are deterministic: the SQL versions need an explicit
+        <code>ORDER BY …, MIN(rowid)</code> to agree with the others when totals are equal.</p>
+    </article>
+    <article>
+      <h3>What's still unproven</h3>
+      <p>The bet is that a small, regular notation is easy for an LLM to write correctly and cheap to read.
+        Token counts above are <code>cl100k_base</code>; whether models actually <em>write</em> Chimni better is untested.
+        <a href="https://github.com/prat8897/chimni/blob/main/CONTRIBUTING.md">Help measure it.</a></p>
+    </article>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <p><b>chimni</b> v0.1 alpha · MIT · zero dependencies ·
+    <a href="https://github.com/prat8897/chimni">github.com/prat8897/chimni</a></p>
+  <p class="small">Run it locally: <code>pip install git+https://github.com/prat8897/chimni</code> then <code>chimni program.chimni '{"x": …}' --trace</code></p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.28.3/full/pyodide.js" defer></script>
+<script src="app.js" defer></script>
+</body>
+</html>

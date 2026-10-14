@@ -4,6 +4,20 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project aims to follow
 [Semantic Versioning](https://semver.org/) once it reaches 1.0 (until then, minor versions may change the language).
 
+## [Unreleased]
+
+### Added
+- A website with an in-browser playground: the real interpreter running on Pyodide, live re-runs, a dataflow view of
+  every cell's output, shareable links, and errors pointed at the offending row. Source in `site/`, deployed to GitHub
+  Pages by `.github/workflows/pages.yml`.
+- The fair comparison: every example now has an idiomatic pandas, SQL or jq version in `examples/compare/`, tested
+  against Chimni on random inputs in CI.
+- Sample inputs for every example in `examples/inputs/` (`chimni examples/01_big_spenders.chimni @examples/inputs/01_big_spenders.json`).
+
+### Changed
+- `benchmarks/size.py` reports the pandas/SQL/jq column, and counts every column's characters with whitespace squeezed
+  (previously only Chimni's were squeezed, which flattered it).
+
 ## [0.1.0] - 2026-10-13
 
 First public release.

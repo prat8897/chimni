@@ -1,0 +1,1 @@
+{"orders": [{"customer": "asha", "amount": 120}, {"customer": "ravi", "amount": 40}, {"customer": "asha", "amount": 80}, {"customer": "meera", "amount": 300}, {"customer": "ravi", "amount": 25}], "min_total": 100}

@@ -1,11 +1,17 @@
 """Differential tests: every example, run as Chimni and as the original Python, on random inputs.
 
-If the two ever disagree, the test fails and prints the input that broke it.
+The idiomatic pandas / SQL / jq versions in examples/compare/ are held to the same standard.
+If two versions ever disagree, the test fails and prints the input that broke it.
 """
+import functools
 import importlib.util
 import inspect
+import json
 import random
+import re
+import shutil
 import sqlite3
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -17,8 +23,9 @@ NAMES = ["asha", "ravi", "meera", "kiran", "dev", "zoya"]
 RUNS = 300
 
 
-def reference(stem):
-    spec = importlib.util.spec_from_file_location("ref_" + stem, EX / "python" / (stem + ".py"))
+@functools.lru_cache(maxsize=None)
+def reference(stem, folder="python"):
+    spec = importlib.util.spec_from_file_location("ref_" + stem, EX / folder / (stem + ".py"))
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     (fn,) = [v for v in vars(mod).values() if inspect.isfunction(v)]
@@ -94,6 +101,77 @@ class DifferentialTests(unittest.TestCase):
         on_disk = sorted(p.stem for p in EX.glob("*.chimni"))
         self.assertEqual(on_disk, sorted(s for s, _ in CASES))
         self.assertEqual(on_disk, sorted(p.stem for p in (EX / "python").glob("*.py")))
+
+
+# ---- the fair comparison: pandas / SQL / jq ----
+def alternative(stem):
+    """Return (language, callable) for examples/compare/<stem>.*"""
+    (path,) = list((EX / "compare").glob(stem + ".*"))
+    if path.suffix == ".py":
+        return "pandas", lambda **args: reference(stem, "compare")(**args)
+    if path.suffix == ".jq":
+        return "jq", lambda **args: run_jq(path, args)
+    return "sql", lambda **args: run_sql(path, stem, args)
+
+
+def run_jq(path, args):
+    out = subprocess.run(["jq", "-c", "-f", str(path)], input=json.dumps(args),
+                         capture_output=True, text=True, check=True).stdout
+    return json.loads(out)
+
+
+def run_sql(path, stem, args):
+    """Load each list input into a table (columns from the `-- tables:` line), run each statement."""
+    src = path.read_text(encoding="utf-8")
+    db = sqlite3.connect(":memory:")
+    for table, cols in re.findall(r"(\w+)\(([^)]*)\)", re.search(r"-- tables: (.*)", src).group(1)):
+        cols = [c.strip() for c in cols.split(",")]
+        db.execute(f"create table {table}({', '.join(cols)})")
+        db.executemany(f"insert into {table} values ({', '.join('?' * len(cols))})",
+                       [tuple(row[c] for c in cols) for row in args[table]])
+    params = {k: v for k, v in args.items() if not isinstance(v, list)}
+    body = "\n".join(l for l in src.splitlines() if not l.lstrip().startswith("--"))
+    slots = chimni.load(str(EX / (stem + ".chimni"))).slots
+    results = []
+    for slot, stmt in zip(slots, [q for q in body.split(";") if q.strip()]):
+        rows = db.execute(stmt, params).fetchall()
+        results.append([tuple(r) for r in rows] if slot.fields else (rows[0][0] if rows else None))
+    return results[0] if len(results) == 1 else tuple(results)
+
+
+def available(lang):
+    if lang == "pandas":
+        return importlib.util.find_spec("pandas") is not None
+    if lang == "jq":
+        return shutil.which("jq") is not None
+    return True
+
+
+class FairComparison(unittest.TestCase):
+    def test_every_example_has_exactly_one_alternative(self):
+        on_disk = sorted(p.stem for p in (EX / "compare").iterdir() if p.is_file())
+        self.assertEqual(on_disk, sorted(s for s, _ in CASES))
+
+    def test_alternatives_match_chimni(self):
+        for stem, gen in CASES:
+            lang, alt = alternative(stem)
+            with self.subTest(example=stem, lang=lang):
+                if not available(lang):
+                    self.skipTest(f"{lang} is not installed")
+                prog = chimni.load(str(EX / (stem + ".chimni")))
+                rng = random.Random("alt" + stem)
+                runs = RUNS if lang != "jq" else 60      # jq is a subprocess per run
+                for _ in range(runs):
+                    args = gen(rng)
+                    self.assertEqual(alt(**args), prog.run(args), msg=f"input: {args}")
+
+
+class SampleInputs(unittest.TestCase):
+    def test_every_example_runs_on_its_sample_input(self):
+        for stem, _ in CASES:
+            with self.subTest(example=stem):
+                args = json.loads((EX / "inputs" / (stem + ".json")).read_text(encoding="utf-8"))
+                self.assertEqual(chimni.load(str(EX / (stem + ".chimni"))).run(args), reference(stem)(**args))
 
 
 class FixedExamples(unittest.TestCase):
